@@ -12,15 +12,12 @@ public:
     Vector2f getVelocity() const { return m_velocity; }
     void setVelocity(const Vector2f& velocity);
     void update(Transformable* body);
-    void handleHit(const Vector2f& surface);
     sf::Vector2f manageCollision(const sf::Vector2f& position, float radius, const RectangleShape& rec = RectangleShape());
-    Vector2f circleIntersectionPoint(const sf::Vector2f& center, const sf::Vector2f& direction, float radius, const RectangleShape& rec);
-    bool isPointInRotatedRectangle(const sf::Vector2f& point, const sf::RectangleShape& rectangle);
-    
-    sf::Vector2f getIntersectionPoint(const sf::RectangleShape& rect1, const sf::RectangleShape& rect2);
-    Vector2f hitDirection(const sf::Vector2f& direction, const sf::Vector2f& intersectionPoint);
     
 private:
+    void handleHit(const Vector2f& surface);
+    bool isPointInRotatedRectangle(const sf::Vector2f& point, const sf::RectangleShape& rectangle);
+    Vector2f responseVector(const sf::Vector2f& center, const sf::Vector2f& direction, float radius, const RectangleShape& rec);
     float dotProduct(const Vector2f& lhs, const Vector2f& rhs)
     {
         return (lhs.x * rhs.x + lhs.y * rhs.y);
