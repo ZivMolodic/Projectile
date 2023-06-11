@@ -21,7 +21,12 @@ public:
 		//m_formation.setTextureRect(textureRect);
 	}
 	void draw(sf::RenderWindow* window) { window->draw(m_formation); }
-	sf::RectangleShape getRec() { return m_formation; }
+	sf::RectangleShape getRec() 
+	{
+		auto rec = m_formation;
+		rec.setPosition(rec.getPosition().x, rec.getPosition().y + 20);
+		return rec; 
+	}
 
 private:
 	//sf::Vector2f m_position; //?

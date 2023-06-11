@@ -12,7 +12,7 @@ void PhisycsBehavior::setVelocity(const Vector2f& velocity)
 
 void PhisycsBehavior::update(Transformable* body) {
     auto norma = std::sqrtf(norm(m_velocity));
-    if (norma < 0.5)
+    if (norma < 0.01f)
         m_velocity = sf::Vector2f(0, 0);
     else
     {
@@ -31,13 +31,7 @@ void PhisycsBehavior::handleHit(const Vector2f& surface) {
     
     Vector2f fix = surface / std::sqrtf(norm(surface));
     auto res = m_velocity - 2 * dotProduct(m_velocity, fix) * fix;
-    if (res.y > 0)
-        res = res;
     
-    /*if (m_velocity.x > 0)
-        setVelocity((res - Vector2f{ 0.1f,0.f }) * BOUNCE_FACTOR);
-    else
-        setVelocity((res + Vector2f{ 0.1f,0.f }) * BOUNCE_FACTOR);*/
     setVelocity(res * BOUNCE_FACTOR);
 }
 

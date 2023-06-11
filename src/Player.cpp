@@ -5,7 +5,7 @@ Player::Player(int numOfRaftMen, const sf::Vector2f& position)
 {
 	m_raft.emplace_back(std::make_unique<RaftBlock>(position));
 
-	for(int i=0; i < 6; ++i)
+	for(int i=0; i < 3; ++i)
 		for(int j = 0; j < 2; ++j)
 			m_raft.emplace_back(std::make_unique<RaftBlock>(sf::Vector2f{ BACKGROUND_SIZE.x - i*163, position.y - 350*j }));
 	//for (int i = 1; i < 6; ++i)

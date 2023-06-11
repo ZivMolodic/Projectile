@@ -8,7 +8,7 @@ using namespace sf;
 class PhisycsBehavior
 {
 public:
-    PhisycsBehavior(float weight) : m_weight(weight), m_velocity{ 0,0 } { if (weight < 0)m_weight = 0; m_timer.restart(); }
+    PhisycsBehavior(float weight) : m_weight(weight), m_velocity{ 0,0 } { if (weight < 0)m_weight = 1; m_timer.restart(); }
     Vector2f getVelocity() const { return m_velocity; }
     void setVelocity(const Vector2f& velocity);
     void update(Transformable* body);
