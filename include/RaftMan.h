@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Weapon.h"
 #include "Resources.h"
+#include "PhysicsBehavior.h"
 
 class Player;
 
@@ -16,12 +17,14 @@ public:
 	void draw(sf::RenderWindow* window) const;
 	void useWeapon(std::weak_ptr<Weapon> weapon) { m_weapon = weapon; }
 	void play(sf::RenderWindow* window, const sf::Event& event);
-	void update(){}
+	void update() { m_physics.update(&m_body); }
+	void handleCollision(const sf::RectangleShape& rec = sf::RectangleShape());
 private:
+	bool m_jumps;
 	int m_life;
 	sf::RectangleShape m_body;
 	std::weak_ptr<Player> m_team;
 	std::weak_ptr<Weapon> m_weapon;
-	//bool holdsWeapon;
+	RectanglePhysics m_physics;
 };
 

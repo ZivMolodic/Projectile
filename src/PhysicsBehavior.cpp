@@ -11,70 +11,68 @@ void PhisycsBehavior::setVelocity(const Vector2f& velocity)
 
 
 void PhisycsBehavior::update(Transformable* body) {
-    auto norma = std::sqrtf(norm(m_velocity));
-    if (norma < 0.01f)
-        m_velocity = sf::Vector2f(0, 0);
-    else
+    
+    m_velocity.y += GRAVITY * m_weight;
+    body->move(m_velocity * (m_timer.restart().asMilliseconds() * 0.08f));
+
+    if(m_rotate)
     {
-        m_velocity.y += GRAVITY * m_weight;
         auto angle = std::atan2(m_velocity.y, m_velocity.x);
         auto rotation = angle * 180.f / 3.14f;
         body->setRotation(rotation + 90);
-        //body->velocity.x *= 0.9f;
-        body->move(m_velocity * (m_timer.restart().asMilliseconds() * 0.08f));
-        //body->move(m_velocity * (0.08f));
     }
 }
 
 
-void PhisycsBehavior::handleHit(const Vector2f& surface) {
-    
+void PhisycsBehavior::handleHit(const Vector2f& surface) 
+{    
     Vector2f fix = surface / std::sqrtf(norm(surface));
     auto res = m_velocity - 2 * dotProduct(m_velocity, fix) * fix;
+
+    if (std::sqrtf(norm(res)) < 0.1f)
+        res = sf::Vector2f();
     
-    setVelocity(res * BOUNCE_FACTOR);
+    setVelocity(res * m_bounce);
 }
 
 
-sf::Vector2f PhisycsBehavior::manageCollision(const sf::Vector2f& position, float radius, const RectangleShape& rec)
+sf::Vector2f CirclePhysics::manageCollision(const sf::Vector2f& position, const RectangleShape& rec)
 {
-    if (position.y + radius >= BACKGROUND_SIZE.y)
+    if (position.y + m_radius >= BACKGROUND_SIZE.y)
     {
         handleHit({ 0,1 });
-        return sf::Vector2f(position.x, BACKGROUND_SIZE.y - (radius + 1));
+        return sf::Vector2f(position.x, BACKGROUND_SIZE.y - (m_radius + 1));
     }
-    if (position.x + radius >= BACKGROUND_SIZE.x)
+    if (position.x + m_radius >= BACKGROUND_SIZE.x)
     {
         //bird.velocity.x *= -BOUNCE_FACTOR;
         handleHit({ 1,0 });
-        return sf::Vector2f(BACKGROUND_SIZE.x - (radius + 1), position.y);
+        return sf::Vector2f(BACKGROUND_SIZE.x - (m_radius + 1), position.y);
     }
     if (position.x <= 0)
     {
         //bird.velocity.x *= -BOUNCE_FACTOR;
         handleHit({ 1,0 });
-        return sf::Vector2f(1 + radius, position.y);
+        return sf::Vector2f(1 + m_radius, position.y);
     }
-    if (auto response = responseVector(position, m_velocity, radius, rec); response != Vector2f{ 0,0 })
+    if (auto response = responseVector(position, getVelocity(), m_radius, rec); response != Vector2f{0,0})
     {
-        auto direction = m_velocity;
+        auto direction = getVelocity();
 
         handleHit(response);
 
         auto pos = position;
 
         auto normDirection = Vector2f{ direction.x / std::sqrtf(norm(direction)), direction.y / std::sqrtf(norm(direction)) };
-        while (isPointInRotatedRectangle(pos + normDirection * (radius + 0.2f), rec))
+        while (isPointInRotatedRectangle(pos + normDirection * (m_radius + 0.2f), rec))
             pos -= normDirection * 0.1f;
-        //pos -= normDirection * 3.f;
+      
         return(pos);
-        //bird.shape.setPosition(Vector2f{bird.shape.getPosition().x, 462.5f - bird.shape.getRadius()});
-        //bird.shape.setPosition(intersection - normDirection * bird.shape.getRadius());
     }
     return sf::Vector2f(0, 0);
 }
 
-Vector2f PhisycsBehavior::responseVector(const sf::Vector2f& center, const sf::Vector2f& direction, float radius, const RectangleShape& rec)
+Vector2f CirclePhysics::responseVector(const sf::Vector2f& center, const sf::Vector2f& direction, float radius, const RectangleShape& rec)
 {
     int count = 0;
     sf::Vector2f response;
@@ -109,7 +107,7 @@ Vector2f PhisycsBehavior::responseVector(const sf::Vector2f& center, const sf::V
     return { 0,0 };
 }
 
-bool PhisycsBehavior::isPointInRotatedRectangle(const sf::Vector2f& point, const sf::RectangleShape& rectangle)
+bool CirclePhysics::isPointInRotatedRectangle(const sf::Vector2f& point, const sf::RectangleShape& rectangle)
 {
     if (rectangle.getRotation() == 0)
         return rectangle.getGlobalBounds().contains(point);
@@ -131,4 +129,107 @@ bool PhisycsBehavior::isPointInRotatedRectangle(const sf::Vector2f& point, const
         localPoint.y >= -halfSize.y && localPoint.y <= halfSize.y);
 }
 
+sf::Vector2f RectanglePhysics::manageCollision(const sf::Vector2f& position, const RectangleShape& rec)
+{
+    if (position.y + m_size.y/2.f >= BACKGROUND_SIZE.y)
+    {
+        handleHit({ 0,1 });
+        return sf::Vector2f(position.x, BACKGROUND_SIZE.y - (m_size.y / 2.f + 1));
+    }
+    if (position.x + m_size.x / 2.f >= BACKGROUND_SIZE.x)
+    {
+        //bird.velocity.x *= -BOUNCE_FACTOR;
+        handleHit({ 1,0 });
+        return sf::Vector2f(BACKGROUND_SIZE.x - (m_size.x / 2.f + 1), position.y);
+    }
+    if (position.x <= 0)
+    {
+        //bird.velocity.x *= -BOUNCE_FACTOR;
+        handleHit({ 1,0 });
+        return sf::Vector2f(1 + m_size.x / 2.f, position.y);
+    }
 
+    auto rectangle = RectangleShape(m_size);
+    rectangle.setOrigin(m_size / 2.f);
+    rectangle.setPosition(position);
+    if (auto response = AABBResponse(rectangle, rec); response != sf::Vector2f())
+    {
+        auto direction = getVelocity();
+
+        handleHit(response);
+
+        direction /= std::sqrtf(norm(direction));
+
+        while(AABBResponse(rectangle, rec) != sf::Vector2f())
+            rectangle.setPosition(rectangle.getPosition() - direction * 0.1f);
+
+        return rectangle.getPosition();
+    }
+    
+    return { 0,0 };
+}
+
+sf::Vector2f RectanglePhysics::AABBResponse(const sf::RectangleShape& rec1, const sf::RectangleShape& rec2)
+{
+    sf::Transform transform = rec1.getTransform();
+    sf::FloatRect rect = rec1.getLocalBounds();
+
+    std::vector<sf::Vector2f> vertices1 = {
+    transform.transformPoint(sf::Vector2f(rect.left, rect.top)),
+    transform.transformPoint(sf::Vector2f(rect.left + rect.width, rect.top)),
+    transform.transformPoint(sf::Vector2f(rect.left + rect.width, rect.top + rect.height)),
+    transform.transformPoint(sf::Vector2f(rect.left, rect.top + rect.height)) };
+
+    transform = rec2.getTransform();
+    rect = rec2.getLocalBounds();
+
+    std::vector<sf::Vector2f> vertices2 = {
+    transform.transformPoint(sf::Vector2f(rect.left, rect.top)),
+    transform.transformPoint(sf::Vector2f(rect.left + rect.width, rect.top)),
+    transform.transformPoint(sf::Vector2f(rect.left + rect.width, rect.top + rect.height)),
+    transform.transformPoint(sf::Vector2f(rect.left, rect.top + rect.height)) };
+
+
+    std::vector<sf::Vector2f> axes{
+        vertices1[1] - vertices1[0], vertices1[2] - vertices1[1],
+        vertices2[1] - vertices2[0], vertices2[2] - vertices2[1]
+    };
+
+    sf::Vector2f responseVector;
+    float minOverlap = std::numeric_limits<float>::max();
+
+    for (const auto& axis : axes)
+    {
+
+        float minProjection1 = std::numeric_limits<float>::max();
+        float maxProjection1 = std::numeric_limits<float>::lowest();
+        for (const auto& vertex : vertices1)
+        {
+            float projection = dotProduct(vertex, axis);
+            minProjection1 = std::min(minProjection1, projection);
+            maxProjection1 = std::max(maxProjection1, projection);
+        }
+
+        float minProjection2 = std::numeric_limits<float>::max();
+        float maxProjection2 = std::numeric_limits<float>::lowest();
+        for (const auto& vertex : vertices2)
+        {
+            float projection = dotProduct(vertex, axis);
+            minProjection2 = std::min(minProjection2, projection);
+            maxProjection2 = std::max(maxProjection2, projection);
+        }
+
+        // Max of rec1 is bigger than Min rec2                  Min of rec1 is bigger than Max rec2
+        if (!(maxProjection1 > minProjection2 && minProjection1 < maxProjection2))
+            return { 0,0 }; // No collision
+
+        float overlap = std::min(maxProjection1, maxProjection2) - std::max(minProjection1, minProjection2);
+        if (overlap < minOverlap)
+        {
+            minOverlap = overlap;
+            responseVector = axis * overlap;
+        }
+    }
+
+    return responseVector;
+}

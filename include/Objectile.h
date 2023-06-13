@@ -8,17 +8,17 @@
 class Objectile
 {
 public:
-    Objectile(const sf::Vector2f& position, const sf::Vector2f& destination) : m_physics{ 1 }, m_setteled(false), m_explosion(nullptr) {
+    Objectile(const sf::Vector2f& position, const sf::Vector2f& destination) : m_physics( 20.f, 0.5f , 1 ), m_setteled(false), m_explosion(nullptr) {
+        m_physics.setBodyToRotate(true);
         m_shape.setRadius(20.f);
         m_shape.setOrigin({ m_shape.getRadius(), m_shape.getRadius() });
         m_shape.setPosition({ position.x + m_shape.getRadius(), position.y + m_shape.getRadius() });
-        //m_shape.setFillColor(sf::Color::Cyan);
         m_shape.setTexture(&Resources::instance().getTexture('*'));
         launch(destination);
         m_timer.restart();
     }
     void handleCollision(const RectangleShape& rec) {
-        if (auto update = m_physics.manageCollision(m_shape.getPosition(), m_shape.getRadius(), rec); update != sf::Vector2f(0, 0))
+        if (auto update = m_physics.manageCollision(m_shape.getPosition(), rec); update != sf::Vector2f(0, 0))
             m_shape.setPosition(update);
 
         if (m_physics.getVelocity() == sf::Vector2f(0, 0))
@@ -55,7 +55,7 @@ public:
 private:
     void launch(const Vector2f& velocity) { m_physics.setVelocity(velocity); }
     sf::CircleShape m_shape;
-    PhisycsBehavior m_physics;
+    CirclePhysics m_physics;
     bool m_setteled;
     sf::Clock m_timer;
     std::unique_ptr<Explosion> m_explosion;
