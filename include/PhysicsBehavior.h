@@ -1,21 +1,21 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Macros.h"
-#include <set>
+#include <memory>
 
 using namespace sf;
 
 
-class PhisycsBehavior
+class PhysicsBehavior
 {
 public:
-    PhisycsBehavior(float bounce, float weight) : m_weight(weight), m_velocity{ 0,0 } , m_rotate(false), m_bounce(bounce) { if (weight < 0)m_weight = 1; m_timer.restart(); }
+    PhysicsBehavior(float bounce, float weight) : m_weight(weight), m_velocity{ 0,0 } , m_rotate(false), m_bounce(bounce) { if (weight < 0)m_weight = 1; m_timer.restart(); }
     Vector2f getVelocity() const { return m_velocity; }
     void setVelocity(const Vector2f& velocity);
     void setBodyToRotate(bool rotate = true) { m_rotate = rotate; }
     void setBounce(float bounce) { (bounce >= 0) ? m_bounce = bounce : m_bounce = 0; }
     float getBounce() { return m_bounce; }
-    void update(Transformable* body);
+    void update(std::shared_ptr<Shape>& body);
     virtual sf::Vector2f manageCollision(const sf::Vector2f& position, const RectangleShape& rec = RectangleShape()) = 0;
     
 protected:
@@ -38,10 +38,10 @@ private:
 };
 
 
-class CirclePhysics : public PhisycsBehavior
+class CirclePhysics : public PhysicsBehavior
 {
 public:
-    CirclePhysics(float radius, float bounce, float weight) : PhisycsBehavior(bounce, weight), m_radius(radius){}
+    CirclePhysics(float radius, float bounce, float weight) : PhysicsBehavior(bounce, weight), m_radius(radius){}
     virtual sf::Vector2f manageCollision(const sf::Vector2f& position, const RectangleShape& rec = RectangleShape()) override;
 
 private:
@@ -51,10 +51,10 @@ private:
     float m_radius;
 };
 
-class RectanglePhysics : public PhisycsBehavior
+class RectanglePhysics : public PhysicsBehavior
 {
 public:
-    RectanglePhysics(const sf::Vector2f& size, float bounce, float weight): PhisycsBehavior(bounce, weight), m_size(size) {}
+    RectanglePhysics(const sf::Vector2f& size, float bounce, float weight): PhysicsBehavior(bounce, weight), m_size(size) {}
     virtual sf::Vector2f manageCollision(const sf::Vector2f& position, const RectangleShape& rec = RectangleShape()) override;
     
 private:

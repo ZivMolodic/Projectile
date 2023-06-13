@@ -1,6 +1,6 @@
 #include "PhysicsBehavior.h"
 
-void PhisycsBehavior::setVelocity(const Vector2f& velocity) 
+void PhysicsBehavior::setVelocity(const Vector2f& velocity)
 {
     auto norma = std::sqrtf(norm(velocity));
     if (norma > 40.f)
@@ -10,8 +10,8 @@ void PhisycsBehavior::setVelocity(const Vector2f& velocity)
 }
 
 
-void PhisycsBehavior::update(Transformable* body) {
-    
+void PhysicsBehavior::update(std::shared_ptr<Shape>& body) 
+{    
     m_velocity.y += GRAVITY * m_weight;
     body->move(m_velocity * (m_timer.restart().asMilliseconds() * 0.08f));
 
@@ -24,7 +24,7 @@ void PhisycsBehavior::update(Transformable* body) {
 }
 
 
-void PhisycsBehavior::handleHit(const Vector2f& surface) 
+void PhysicsBehavior::handleHit(const Vector2f& surface)
 {    
     Vector2f fix = surface / std::sqrtf(norm(surface));
     auto res = m_velocity - 2 * dotProduct(m_velocity, fix) * fix;

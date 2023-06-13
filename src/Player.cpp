@@ -3,14 +3,14 @@
 Player::Player(int numOfRaftMen, const sf::Vector2f& position)
 	: m_playing(false), m_crewSize(numOfRaftMen), m_position(position)
 {
-	m_raft.emplace_back(std::make_unique<RaftBlock>(position));
-	m_raft.emplace_back(std::make_unique<RaftBlock>(sf::Vector2f{ position.x + 50, position.y - 100 }));
+	m_raft.emplace_back(std::make_shared<RaftBlock>(position));
+	m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ position.x + 50, position.y - 100 }));
 
 	for(int i=0; i < 3; ++i)
 		for(int j = 0; j < 2; ++j)
-			m_raft.emplace_back(std::make_unique<RaftBlock>(sf::Vector2f{ BACKGROUND_SIZE.x - i*163, position.y - 350*j }));
+			m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ BACKGROUND_SIZE.x - i*163, position.y - 350*j }));
 	//for (int i = 1; i < 6; ++i)
-	//	m_raft.emplace_back(std::make_unique<RaftBlock>(sf::Vector2f{ position.x + i * 163, position.y }));
+	//	m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ position.x + i * 163, position.y }));
 
 
 	m_weapons.emplace_back(std::make_shared<Weapon>());
@@ -21,7 +21,7 @@ void Player::initRaftMen()
 	for (int i = 0; i < m_crewSize; ++i)
 	{
 		auto self = this->shared_from_this();
-		m_raftMen.emplace_back(RaftMan(self, sf::Vector2f(m_position.x, m_position.y - 200)));
+		m_raftMen.push_back(RaftMan(self, sf::Vector2f(m_position.x, m_position.y - 200)));
 	}
 }
 

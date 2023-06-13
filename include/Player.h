@@ -39,7 +39,7 @@ private:
     void initRaftMen();
 
 
-    vector<std::unique_ptr<RaftBlock>> m_raft;
+    vector<std::shared_ptr<RaftBlock>> m_raft;
     vector<std::shared_ptr<Weapon>> m_weapons;
     vector<RaftMan> m_raftMen;
     bool m_playing;
