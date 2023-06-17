@@ -16,7 +16,6 @@ public:
 	sf::FloatRect getGlobalBounds() { return m_shape->getGlobalBounds(); }
 	sf::Vector2f getPosition() const { return m_shape->getPosition(); }
 	void setPosition(const sf::Vector2f& position) { m_shape->setPosition(position); }
-	//virtual void update() = 0;
 	virtual void draw(RenderWindow* window, const sf::Vector2f& position = sf::Vector2f()) const = 0;
 
 protected:

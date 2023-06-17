@@ -23,9 +23,7 @@ public:
 private:
 	bool m_jumps;
 	int m_life;
-	//sf::RectangleShape m_body;
 	std::weak_ptr<Player> m_team;
 	std::weak_ptr<Weapon> m_weapon;
-	//RectanglePhysics m_physics;
 };
 

@@ -1,5 +1,5 @@
 #include "PhysicsBehavior.h"
-
+#include <iostream>
 void PhysicsBehavior::setVelocity(const Vector2f& velocity)
 {
     auto norma = std::sqrtf(norm(velocity));
@@ -11,8 +11,24 @@ void PhysicsBehavior::setVelocity(const Vector2f& velocity)
 
 
 void PhysicsBehavior::update(std::shared_ptr<Shape>& body) 
-{    
-    m_velocity.y += GRAVITY * m_weight;
+{   
+    //static int stable = 0, check = 0;
+    //if (std::abs(getVelocity().y) < 2)
+    //    stable++;
+    //else
+    //    stable = 0;
+
+    //if (stable >= 5)
+    //{
+    //    check++;
+    //    setVelocity({ getVelocity().x, 0 });
+    //    if (check >= 5)
+    //        stable = check = 0;
+    //}
+    //else
+        setVelocity({ getVelocity().x, getVelocity().y + GRAVITY * m_weight });
+    //std::cout << "response: " << m_velocity.x << " , " << m_velocity.y << std::endl;
+
     body->move(m_velocity * (m_timer.restart().asMilliseconds() * 0.08f));
 
     if(m_rotate)
@@ -28,6 +44,7 @@ void PhysicsBehavior::handleHit(const Vector2f& surface)
 {    
     Vector2f fix = surface / std::sqrtf(norm(surface));
     auto res = m_velocity - 2 * dotProduct(m_velocity, fix) * fix;
+    //std::cout << "response: " << res.x << " , " << res.y << std::endl;
 
     if (std::sqrtf(norm(res)) < 0.1f)
         res = sf::Vector2f();
@@ -45,13 +62,11 @@ sf::Vector2f CirclePhysics::manageCollision(const sf::Vector2f& position, const 
     }
     if (position.x + m_radius >= BACKGROUND_SIZE.x)
     {
-        //bird.velocity.x *= -BOUNCE_FACTOR;
         handleHit({ 1,0 });
         return sf::Vector2f(BACKGROUND_SIZE.x - (m_radius + 1), position.y);
     }
     if (position.x <= 0)
     {
-        //bird.velocity.x *= -BOUNCE_FACTOR;
         handleHit({ 1,0 });
         return sf::Vector2f(1 + m_radius, position.y);
     }
@@ -101,10 +116,8 @@ Vector2f CirclePhysics::responseVector(const sf::Vector2f& center, const sf::Vec
         }
     }
 
-    //if (count > 10)
-        return response;
 
-    return { 0,0 };
+    return response;
 }
 
 bool CirclePhysics::isPointInRotatedRectangle(const sf::Vector2f& point, const sf::RectangleShape& rectangle)
@@ -131,6 +144,42 @@ bool CirclePhysics::isPointInRotatedRectangle(const sf::Vector2f& point, const s
 
 sf::Vector2f RectanglePhysics::manageCollision(const sf::Vector2f& position, const RectangleShape& rec)
 {
+    auto rectangle = RectangleShape(m_size);
+    rectangle.setOrigin(m_size / 2.f);
+    rectangle.setPosition(position);
+    if (auto response = AABBResponse(rectangle, rec); response != sf::Vector2f())
+    {
+        auto direction = getVelocity();
+        //static int stable = 0, check = 0;
+        //if (std::abs(getVelocity().y) < 2)
+        //{
+        //    stable++;
+        //    if (stable >= 5)
+        //    {
+        //        check++;
+        //        direction = { 0, 1 };
+        //    }
+        //    if (check >= 5)
+        //        stable = check = 0;
+        //}
+        
+        
+        if (isWalking())
+        {
+            if (std::abs(response.x) < 0.01f)
+                direction.x = 0;
+        }
+
+        handleHit(response);
+
+        direction /= std::sqrtf(norm(direction));
+        //std::cout << "response: " << response.x << " , " << response.y << std::endl;
+
+        while (AABBResponse(rectangle, rec) != sf::Vector2f())
+            rectangle.move(- direction * 0.1f);
+
+        return rectangle.getPosition();
+    }
     if (position.y + m_size.y/2.f >= BACKGROUND_SIZE.y)
     {
         handleHit({ 0,1 });
@@ -138,34 +187,16 @@ sf::Vector2f RectanglePhysics::manageCollision(const sf::Vector2f& position, con
     }
     if (position.x + m_size.x / 2.f >= BACKGROUND_SIZE.x)
     {
-        //bird.velocity.x *= -BOUNCE_FACTOR;
         handleHit({ 1,0 });
         return sf::Vector2f(BACKGROUND_SIZE.x - (m_size.x / 2.f + 1), position.y);
     }
     if (position.x <= 0)
     {
-        //bird.velocity.x *= -BOUNCE_FACTOR;
         handleHit({ 1,0 });
-        return sf::Vector2f(1 + m_size.x / 2.f, position.y);
-    }
-
-    auto rectangle = RectangleShape(m_size);
-    rectangle.setOrigin(m_size / 2.f);
-    rectangle.setPosition(position);
-    if (auto response = AABBResponse(rectangle, rec); response != sf::Vector2f())
-    {
-        auto direction = getVelocity();
-
-        handleHit(response);
-
-        direction /= std::sqrtf(norm(direction));
-
-        while(AABBResponse(rectangle, rec) != sf::Vector2f())
-            rectangle.setPosition(rectangle.getPosition() - direction * 0.1f);
-
-        return rectangle.getPosition();
+        return sf::Vector2f(m_size.x / 2.f, position.y);
     }
     
+
     return { 0,0 };
 }
 
@@ -219,7 +250,6 @@ sf::Vector2f RectanglePhysics::AABBResponse(const sf::RectangleShape& rec1, cons
             maxProjection2 = std::max(maxProjection2, projection);
         }
 
-        // Max of rec1 is bigger than Min rec2                  Min of rec1 is bigger than Max rec2
         if (!(maxProjection1 > minProjection2 && minProjection1 < maxProjection2))
             return { 0,0 }; // No collision
 

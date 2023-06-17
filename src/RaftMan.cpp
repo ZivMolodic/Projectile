@@ -4,15 +4,9 @@
 
 
 RaftMan::RaftMan(std::weak_ptr<Player> team, const sf::Vector2f& position)
-	: DynamicObject({50,80},position,'r',0,2), m_team(team),
+	: DynamicObject({30,60},position,'r',0.5,2), m_team(team),
 	m_life(100), m_jumps(false)
-{
-	////m_physics.setBounce(0.75f);
-	//m_body.setOrigin(m_body.getSize() / 2.f);
-	//m_body.setPosition(position + (m_body.getSize() / 2.f));
-	////m_body.setFillColor(sf::Color::Red);
-	//m_body.setTexture(&Resources::instance().getTexture('r'));
-}
+{}
 
 void RaftMan::update()
 { 
@@ -31,28 +25,36 @@ void RaftMan::draw(sf::RenderWindow* window, const sf::Vector2f& position) const
 
 void RaftMan::play(sf::RenderWindow* window, const sf::Event& event)
 {
-	
-	//if(event.type == sf::Event::KeyPressed)
-	//{
-	//	if (event.key.code == sf::Keyboard::Left)
-	//		m_body.move(sf::Vector2f(-10.f, 0.f));
 
-	//	else if (event.key.code == sf::Keyboard::Right)
-	//	{
-	//		m_body.move(10.f, 0.f);
-	//	}
-	//	else if (event.key.code == sf::Keyboard::Up)
-	//		m_physics.setVelocity({ 0, -20 });
-	//}
+	m_physics->setWalking(false);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		m_shape->move(sf::Vector2f(-7.f, 0.f));
+	{
+		m_shape->setScale({ -1,1 });
+		if (m_physics->isJumping())
+			m_physics->setVelocity({ -1.5f,m_physics->getVelocity().y });
+		else
+		{
+			//m_shape->move({ 1,0 });
+			m_physics->setVelocity({ -1,0 });
+			m_physics->setWalking(true);
+		}
+	}
 
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		m_shape->move(7.f, 0.f);
-
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !m_jumps)
 	{
-		m_jumps = true;
+		m_shape->setScale({ 1,1 });
+		if(m_physics->isJumping())
+			m_physics->setVelocity({ 1.5f,m_physics->getVelocity().y});
+		else
+		{
+			//m_shape->move({ 1,0 });
+			m_physics->setVelocity({ 1,0 });
+			m_physics->setWalking(true);
+		}
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !m_physics->isJumping())
+	{
+		m_physics->setJumping(true);
 		m_physics->setVelocity({ 0, -12 });
 	}
 
@@ -76,11 +78,11 @@ void RaftMan::play(sf::RenderWindow* window, const sf::Event& event)
 
 void RaftMan::handleCollision(const sf::RectangleShape& rec)
 {
-	if (m_jumps && m_physics->getVelocity().y < 0)
+	if (m_physics->isJumping() && m_physics->getVelocity().y < 0)
 		return;
 	if (auto update = m_physics->manageCollision(m_shape->getPosition(), rec); update != sf::Vector2f(0, 0))
 	{
-		m_jumps = false;
+		m_physics->setJumping(false);
 		m_shape->setPosition(update);
 	}
 }

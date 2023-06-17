@@ -4,7 +4,7 @@ Player::Player(int numOfRaftMen, const sf::Vector2f& position)
 	: m_playing(false), m_crewSize(numOfRaftMen), m_position(position)
 {
 	m_raft.emplace_back(std::make_shared<RaftBlock>(position));
-	m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ position.x + 50, position.y - 100 }));
+	m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ position.x + 100, position.y - 60 }));
 
 	for(int i=0; i < 3; ++i)
 		for(int j = 0; j < 2; ++j)
@@ -41,6 +41,7 @@ void Player::update()
 		pawn.update();
 		for(const auto& raft: m_raft)
 			pawn.handleCollision(raft->getRec());
+		//pawn.handleCollision(m_raft[0]->getRec());
 	}
 	for (auto& x : m_weapons) 
 		x->update();

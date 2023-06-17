@@ -4,7 +4,6 @@ Weapon:: Weapon()
 	: DynamicObject({ 55.f, 25.f }, {0,0},'g',0,0), m_objectile(nullptr)
 {
 	m_shape->setOrigin({ 0 , 12.5f });
-	//m_body.setTexture(&Resources::instance().getTexture('g'));
 }
 
 void Weapon::shot(const sf::Vector2f& destination)
@@ -40,13 +39,11 @@ void Weapon::draw(RenderWindow* window, const sf::Vector2f& position) const
 	{
 		auto velocity = (mousePosition - getPosition());
 
-		float initialSpeed = 100.f;
 		float timeStep = 0.1f; // Adjust this value to control the smoothness of the trajectory
 		float time = 0.f;
 		float velocityX = abs(velocity.x) * cosf(angle * 3.14159f / 180.f);
 		float velocityY = abs(velocity.y) * sin(angle * 3.14159f / 180.f);
 
-		//auto velocity = sf::Vector2f(mousePosition.x, mousePosition.y) - m_body.getPosition();
 		std::vector<sf::CircleShape> dots;
 		auto potentialPosition = m_shape->getTransform().transformPoint({ m_shape->getLocalBounds().left + m_shape->getLocalBounds().width, m_shape->getLocalBounds().top + 7.5f});
 		auto initialPosition = potentialPosition;

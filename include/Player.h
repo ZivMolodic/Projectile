@@ -12,7 +12,7 @@ class RaftMan;
 class Player: public enable_shared_from_this<Player>
 {
 public:
-    Player(int numOfRaftMen, const sf::Vector2f& position); /////////
+    Player(int numOfRaftMen, const sf::Vector2f& position);
     void update();
     void draw(sf::RenderWindow* window);
     void getWeapon(RaftMan& pawn, int i);
@@ -39,7 +39,7 @@ private:
     void initRaftMen();
 
 
-    vector<std::shared_ptr<RaftBlock>> m_raft;
+    vector<std::shared_ptr<RaftBlock>> m_raft;//1 ,2 ,null, 4 ,5
     vector<std::shared_ptr<Weapon>> m_weapons;
     vector<RaftMan> m_raftMen;
     bool m_playing;

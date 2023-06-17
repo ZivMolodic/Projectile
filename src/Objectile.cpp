@@ -4,11 +4,6 @@
 Objectile::Objectile(const sf::Vector2f& position, const sf::Vector2f& destination)
     : DynamicObject(20,position,'*',0.3f,1), m_setteled(false), m_explosion(nullptr)
 {
-    //m_physics.setBodyToRotate(true);
-    //m_shape.setRadius(20.f);
-    //m_shape.setOrigin({ m_shape.getRadius(), m_shape.getRadius() });
-    //m_shape.setPosition({ position.x + m_shape.getRadius(), position.y + m_shape.getRadius() });
-    //m_shape.setTexture(&Resources::instance().getTexture('*'));
     m_physics->setBodyToRotate(true);
     launch(destination);
     m_timer.restart();

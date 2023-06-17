@@ -19,7 +19,6 @@ public:
 	void handleCollision(const RectangleShape& rec) override { if (m_objectile) m_objectile->handleCollision(rec); }
 
 private:
-	//sf::RectangleShape m_body;
 	std::shared_ptr<Objectile> m_objectile;
 	int m_ammo;
 };
