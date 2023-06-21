@@ -15,6 +15,8 @@ public:
     Player(int numOfRaftMen, const sf::Vector2f& position);
     void update();
     void draw(sf::RenderWindow* window);
+    void addRaft(RaftMan& pawn);
+    bool placeRaft(RaftBlock& raftBlock, Vector2i cursorLocation);
     void getWeapon(RaftMan& pawn, int i);
     void done(RaftMan& pawn) { m_playing = false; }
     void play(RenderWindow* window, const sf::Event& event);
@@ -45,4 +47,5 @@ private:
     bool m_playing;
     int m_crewSize;
     sf::Vector2f m_position;
+  //  std::vector<std::unique_ptr<Button>> m_menu;
 };

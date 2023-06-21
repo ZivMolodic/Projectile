@@ -20,10 +20,14 @@ public:
 	void play(sf::RenderWindow* window, const sf::Event& event);
 	void update() override;
 	void handleCollision(const sf::RectangleShape& rec = sf::RectangleShape()) override;
+	RaftBlock getRaftBlock() const { return m_raftBlock; }
+
 private:
+	bool m_holdRaft;
 	bool m_jumps;
 	int m_life;
 	std::weak_ptr<Player> m_team;
 	std::weak_ptr<Weapon> m_weapon;
+	RaftBlock m_raftBlock;
 };
 

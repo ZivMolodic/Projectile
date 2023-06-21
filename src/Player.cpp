@@ -3,8 +3,10 @@
 Player::Player(int numOfRaftMen, const sf::Vector2f& position)
 	: m_playing(false), m_crewSize(numOfRaftMen), m_position(position)
 {
-	m_raft.emplace_back(std::make_shared<RaftBlock>(position));
-	m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ position.x + 100, position.y - 60 }));
+	//m_menu.emplace_back(make_unique<UpRaftButton>());////////////////////
+
+	m_raft.emplace_back(std::make_shared<RaftBlock>(Vector2f{100, 100}));
+	m_raft.emplace_back(std::make_shared<RaftBlock>(Vector2f{ 400, 400 }));
 
 	for(int i=0; i < 3; ++i)
 		for(int j = 0; j < 2; ++j)
@@ -79,4 +81,46 @@ void Player::play(RenderWindow* window, const sf::Event& event)
 	//needs to manage internal turns
 	m_playing = true;
 	m_raftMen[0].play(window, event);
+}
+
+bool Player::placeRaft(RaftBlock& raftBlock, Vector2i cursorLocation)
+{
+	for (const auto& raft : m_raft)
+	{
+		Vector2f raftPos = raft.get()->getPosition();
+		float height = raft.get()->getGlobalBounds().height;
+		float width = raft.get()->getGlobalBounds().width;
+
+
+		if (RaftBlock(Vector2f{ raftPos.x, raftPos.y - height }).getGlobalBounds().contains(Vector2f(cursorLocation)))
+		{
+			raftBlock.setPosition(Vector2f{ raftPos.x, raftPos.y - height });
+
+			return true;
+		}
+
+		else if (RaftBlock(Vector2f{ raftPos.x + width, raftPos.y }).getGlobalBounds().contains(Vector2f(cursorLocation)))
+		{
+			raftBlock.setPosition(Vector2f{ raftPos.x + width, raftPos.y });
+
+			return true;
+		}
+
+		else if (RaftBlock(Vector2f{ raftPos.x - width, raftPos.y }).getGlobalBounds().contains(Vector2f(cursorLocation)))
+		{
+			raftBlock.setPosition(Vector2f{ raftPos.x - width, raftPos.y });
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void Player::addRaft(RaftMan& pawn)
+{
+	for (const auto& raft : m_raft)
+		if (raft.get()->getPosition() == pawn.getRaftBlock().getPosition())
+			return;
+	m_raft.push_back(std::make_unique<RaftBlock>(pawn.getRaftBlock().getPosition()));
 }

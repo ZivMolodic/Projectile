@@ -20,7 +20,7 @@ public:
 		rec.setFillColor(sf::Color::Magenta);
 		return rec; 
 	}
-
+	
 private:
 	int m_durability;
 };

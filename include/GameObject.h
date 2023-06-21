@@ -15,9 +15,9 @@ public:
 	~GameObject(){}
 	sf::FloatRect getGlobalBounds() { return m_shape->getGlobalBounds(); }
 	sf::Vector2f getPosition() const { return m_shape->getPosition(); }
-	void setPosition(const sf::Vector2f& position) { m_shape->setPosition(position); }
+	void setPosition(const sf::Vector2f& position) { m_shape.get()->setPosition(position); }
 	virtual void draw(RenderWindow* window, const sf::Vector2f& position = sf::Vector2f()) const = 0;
-
+	void setBlendMode() { m_shape->setFillColor(sf::Color(255, 255, 255, 128)); }
 protected:
 	std::shared_ptr<sf::Shape> m_shape;
 };

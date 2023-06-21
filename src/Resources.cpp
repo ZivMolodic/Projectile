@@ -14,16 +14,12 @@ Resources& Resources::instance()
 }
 
 void Resources::loadGraphics()
-{
-	/*std::vector <std::string> pngNames = { "redGhost.png" , "main_background.png" ,"gameplay_background.png" ,"cleanPage.png", "door.png",
-										   "pinkGhost.png", "orangeGhost.png" ,"cookie.png", "key.png", "grenade_launcher.png",
-										   "pacman.png", "superpacman_present.png", "wall.png", "frightenedGhost.png", "clock_present.png",
-											"ice_present.png", "life_present.png", "freezed_ghost.png"};*/
-	std::vector <std::string> pngNames = { "boy.png" ,
+{	
+	std::vector <std::string> pngNames = { "menuBlock.png","boy.png" ,
 		"main_background.png" ,"gameplay_background.png" ,
 		"grenade.png", "grenade_launcher.png", "raft.png" };
 
-	std::vector <char> pngChars = { 'r', 'm', 'b','*', 'g','#' };
+	std::vector <char> pngChars = { 'B', 'r', 'm', 'b','*', 'g','#' };
 	sf::RenderWindow window;
 	for (int i = 0; i < pngNames.size(); i++)
 	{
