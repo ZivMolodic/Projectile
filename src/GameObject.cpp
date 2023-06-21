@@ -5,6 +5,7 @@
 using namespace sf;
 
 GameObject::GameObject(const sf::Vector2f& size, const sf::Vector2f& position, char c)
+	: m_dead(false)
 {
 	m_shape = std::make_shared<sf::RectangleShape>(size);
 	m_shape->setOrigin(size / 2.f);

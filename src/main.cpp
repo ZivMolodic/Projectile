@@ -8,6 +8,7 @@
 //#include "RaftBlock.h"
 //#include "GameObject.h"
 #include "MainMenu.h"
+#include "Board.h"
 //#include "Controller.h"
 //#include "Player.h"
 

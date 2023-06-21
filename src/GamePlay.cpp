@@ -12,7 +12,8 @@ GamePlay::GamePlay()
 
 void GamePlay::gameLoop(RenderWindow* window)
 {
-    auto player = std::make_shared<Player>(1, Vector2f{ 180, 400 });
+    auto board = Board(Vector2f{ 180, 400 }, Vector2f{ 280,400 }, 1);
+    //auto player = std::make_shared<Player>(1, Vector2f{ 180, 400 });
 
     bool playerTurn = true;
 
@@ -28,8 +29,10 @@ void GamePlay::gameLoop(RenderWindow* window)
         window->setView(view);
         window->draw(m_backGround);
         //update
-        player->update();
-        player->draw(window);
+        board.update();
+        board.draw(window);
+        //player->update();
+        //player->draw(window);
 
         window->display();
 
@@ -56,24 +59,24 @@ void GamePlay::gameLoop(RenderWindow* window)
         /*if(view.getCenter().x + view.getSize().x/2.f < m_backGround.getSize().x &&
             view.getCenter().x + view.getSize().x / 2.f > 0)
             view.move(Vector2f({ 1, 0 }) * 0.15f);*/
-
-        if (playerTurn)
-        {
-            player->play(window, event);
-            //playerTurn = false;
-        }
-        else if (player->isPlaying())
-            player->play(window, event);
+        board.play(window, event);
+        //if (playerTurn)
+        //{
+        //    player->play(window, event);
+        //    //playerTurn = false;
+        //}
+        //else if (player->isPlaying())
+        //    player->play(window, event);
         
 
-        if (player->shooting())
-        {
-            sf::Vector2f objPosition = player->getObjectilePosition();
-            if (objPosition.x - view.getSize().x/2.f > 0 && objPosition.x + view.getSize().x/2.f <= m_backGround.getSize().x)
-                view.setCenter({ objPosition.x, view.getCenter().y });
-        }
-        else
-            view.setCenter({ view.getSize().x / 2.f , view.getCenter().y });
+        //if (player->shooting())
+        //{
+        //    sf::Vector2f objPosition = player->getObjectilePosition();
+        //    if (objPosition.x - view.getSize().x/2.f > 0 && objPosition.x + view.getSize().x/2.f <= m_backGround.getSize().x)
+        //        view.setCenter({ objPosition.x, view.getCenter().y });
+        //}
+        //else
+        //    view.setCenter({ view.getSize().x / 2.f , view.getCenter().y });
 
     }
 }

@@ -17,9 +17,15 @@ public:
 	sf::Vector2f getPosition() const { return m_shape->getPosition(); }
 	void setPosition(const sf::Vector2f& position) { m_shape->setPosition(position); }
 	virtual void draw(RenderWindow* window, const sf::Vector2f& position = sf::Vector2f()) const = 0;
+	virtual void update() = 0;
+	void setDead() { m_dead = true; }
+	bool isDead() { return m_dead; }
+	//virtual sf::RectangleShape getGeometry() = 0;
 
 protected:
 	std::shared_ptr<sf::Shape> m_shape;
+private:
+	bool m_dead;
 };
 
 

@@ -2,6 +2,7 @@
 #include "SFML/Graphics.hpp"
 #include <vector>
 #include <memory>
+#include "Board.h"
 #include "RaftBlock.h"
 #include "RaftMan.h"
 #include "Weapon.h"
@@ -12,7 +13,7 @@ class RaftMan;
 class Player: public enable_shared_from_this<Player>
 {
 public:
-    Player(int numOfRaftMen, const sf::Vector2f& position);
+    Player(int numOfRaftMen, const sf::Vector2f& position, Board* board);
     void update();
     void draw(sf::RenderWindow* window);
     void getWeapon(RaftMan& pawn, int i);
@@ -34,14 +35,14 @@ public:
     //        search->get()->handleCollision(rec);
 
     //}
-
+    
 private:
     void initRaftMen();
 
-
-    vector<std::shared_ptr<RaftBlock>> m_raft;//1 ,2 ,null, 4 ,5
+    Board* m_board;
+    vector<std::unique_ptr<RaftBlock>> m_raft;//1 ,2 ,null, 4 ,5
     vector<std::shared_ptr<Weapon>> m_weapons;
-    vector<RaftMan> m_raftMen;
+    vector<std::unique_ptr<RaftMan>> m_raftMen;
     bool m_playing;
     int m_crewSize;
     sf::Vector2f m_position;

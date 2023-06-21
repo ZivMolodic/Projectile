@@ -13,6 +13,7 @@ public:
 	{ 
 		window->draw(*m_shape); 
 	}
+	void update() override {}
 	sf::RectangleShape getRec() const
 	{
 		auto rec = sf::RectangleShape({ 100, 15 });

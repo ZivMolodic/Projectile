@@ -19,6 +19,7 @@ public:
 	void useWeapon(std::weak_ptr<Weapon> weapon) { m_weapon = weapon; }
 	void play(sf::RenderWindow* window, const sf::Event& event);
 	void update() override;
+	
 	void handleCollision(const sf::RectangleShape& rec = sf::RectangleShape()) override;
 private:
 	bool m_jumps;
