@@ -3,17 +3,20 @@
 
 
 
-RaftMan::RaftMan(std::weak_ptr<Player> team, const sf::Vector2f& position)
+RaftMan::RaftMan(Player* team, const sf::Vector2f& position)
 	: DynamicObject({30,60},position,'r',0.5,2), m_team(team),
 	m_life(100), m_jumps(false)
 {}
 
 void RaftMan::update()
 { 
-	m_physics->update(m_shape);
+	m_physics->update(m_shape.get());
 
 	if (m_weapon.lock())
+	{
 		m_weapon.lock()->setPosition(getPosition());
+		m_weapon.lock()->update();
+	}
 }
 
 void RaftMan::draw(sf::RenderWindow* window, const sf::Vector2f& position) const
@@ -68,10 +71,10 @@ void RaftMan::play(sf::RenderWindow* window, const sf::Event& event)
 
 			m_weapon.lock()->shot((localPosition - m_shape->getPosition()) * 0.06f);
 			m_weapon.lock() = nullptr;
-			m_team.lock()->done(*this);
+			m_team->done(*this);
 		}
 		else if (event.mouseButton.button == sf::Mouse::Button::Right)
-			m_team.lock()->getWeapon(*this, 0);
+			m_team->getWeapon(*this, 0);
 	}
 
 }
@@ -85,4 +88,13 @@ void RaftMan::handleCollision(const sf::RectangleShape& rec)
 		m_physics->setJumping(false);
 		m_shape->setPosition(update);
 	}
+}
+
+void RaftMan::handleExplosion(const Explosion& explosion)
+{
+	auto vec = this->getPosition() - explosion.getPosition();
+	auto norm = std::sqrtf(vec.x * vec.x + vec.y * vec.y);
+	//m_life -= 1 / std::sqrtf(vec.x * vec.x + vec.y * vec.y);
+	m_physics->setBounce(0.85f);
+	m_physics->setVelocity((explosion.getLimitRadius() / norm) * (vec / norm));
 }

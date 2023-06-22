@@ -14,7 +14,8 @@ public:
 	void update() { for(auto& object: m_objects) object->update(); }
 	void draw(RenderWindow* window);
 	void play(RenderWindow* window, const sf::Event& event);
-	//void handleCollisions();
+	void handleCollisions();
+	sf::Vector2f getPlayerPosition() { return m_user->getPlayerPosition(); }
 
 private:
 	std::shared_ptr<Player> m_user;

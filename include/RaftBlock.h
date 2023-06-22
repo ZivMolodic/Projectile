@@ -14,9 +14,9 @@ public:
 		window->draw(*m_shape); 
 	}
 	void update() override {}
-	sf::RectangleShape getRec() const
+	sf::RectangleShape getRectangle() const
 	{
-		auto rec = sf::RectangleShape({ 100, 15 });
+		auto rec = sf::RectangleShape({ 100, 40 });
 		rec.setPosition(getPosition().x - 50, getPosition().y - 10);
 		rec.setFillColor(sf::Color::Magenta);
 		return rec; 

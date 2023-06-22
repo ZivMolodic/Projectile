@@ -12,7 +12,7 @@ public:
 	//GameObject() {};
 	GameObject(const sf::Vector2f& size, const sf::Vector2f& position, char c);
 	GameObject(float radius, const sf::Vector2f& position, char c);
-	~GameObject(){}
+	virtual ~GameObject() = default;
 	sf::FloatRect getGlobalBounds() { return m_shape->getGlobalBounds(); }
 	sf::Vector2f getPosition() const { return m_shape->getPosition(); }
 	void setPosition(const sf::Vector2f& position) { m_shape->setPosition(position); }
@@ -20,10 +20,10 @@ public:
 	virtual void update() = 0;
 	void setDead() { m_dead = true; }
 	bool isDead() { return m_dead; }
-	//virtual sf::RectangleShape getGeometry() = 0;
+	virtual sf::FloatRect getRec() const { return m_shape->getGlobalBounds(); };
 
 protected:
-	std::shared_ptr<sf::Shape> m_shape;
+	std::unique_ptr<sf::Shape> m_shape;
 private:
 	bool m_dead;
 };
@@ -34,9 +34,10 @@ class DynamicObject : public GameObject
 public:
 	DynamicObject(const sf::Vector2f& size, const sf::Vector2f& position, char c, float bounce, float weight);
 	DynamicObject(float radius, const sf::Vector2f& position, char c, float bounce, float weight);
+	virtual ~DynamicObject() = default;
 	virtual void update() = 0;
 	virtual void handleCollision(const sf::RectangleShape& rec = sf::RectangleShape()) = 0;
 
 protected:
-	std::shared_ptr<PhysicsBehavior> m_physics;
+	std::unique_ptr<PhysicsBehavior> m_physics;
 };

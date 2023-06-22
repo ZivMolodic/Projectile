@@ -10,7 +10,7 @@ void PhysicsBehavior::setVelocity(const Vector2f& velocity)
 }
 
 
-void PhysicsBehavior::update(std::shared_ptr<Shape>& body) 
+void PhysicsBehavior::update(Shape* body) 
 {   
     //static int stable = 0, check = 0;
     //if (std::abs(getVelocity().y) < 2)

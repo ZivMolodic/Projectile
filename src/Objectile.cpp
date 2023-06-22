@@ -23,11 +23,11 @@ void Objectile::update()
         m_explosion->update();
 
     else if (m_timer.getElapsedTime().asSeconds() > 3)
-        m_explosion = std::make_shared<Explosion>(getPosition(), 150.f);
+        m_explosion = std::make_shared<Explosion>(getPosition(), 250.f);
 
     else
     {
-        m_physics->update(m_shape);
+        m_physics->update(m_shape.get());
 
         if (m_physics->getVelocity() == sf::Vector2f(0, 0))
             m_setteled = true;

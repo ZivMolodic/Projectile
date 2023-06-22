@@ -21,9 +21,9 @@ void Resources::loadGraphics()
 											"ice_present.png", "life_present.png", "freezed_ghost.png"};*/
 	std::vector <std::string> pngNames = { "boy.png" ,
 		"main_background.png" ,"gameplay_background.png" ,
-		"grenade.png", "grenade_launcher.png", "raft.png" };
+		"grenade.png", "grenade_launcher.png", "raft.png", "explosion.png"};
 
-	std::vector <char> pngChars = { 'r', 'm', 'b','*', 'g','#' };
+	std::vector <char> pngChars = { 'r', 'm', 'b','*', 'g','#', 'x'};
 	sf::RenderWindow window;
 	for (int i = 0; i < pngNames.size(); i++)
 	{

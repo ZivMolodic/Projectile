@@ -30,6 +30,7 @@ void GamePlay::gameLoop(RenderWindow* window)
         window->draw(m_backGround);
         //update
         board.update();
+        board.handleCollisions();
         board.draw(window);
         //player->update();
         //player->draw(window);

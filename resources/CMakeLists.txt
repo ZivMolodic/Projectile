@@ -32,6 +32,7 @@ configure_file ("grenade.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("raft.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("boy.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("raft2.png" ${CMAKE_BINARY_DIR} COPYONLY)
+configure_file ("explosion.png" ${CMAKE_BINARY_DIR} COPYONLY)
 
 configure_file ("timer.wav" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("finish_level.wav" ${CMAKE_BINARY_DIR} COPYONLY)

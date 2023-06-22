@@ -7,7 +7,7 @@ Player::Player(int numOfRaftMen, const sf::Vector2f& position, Board* board)
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
 	
-
+	initRaftMen();
 	//for(int i=0; i < 3; ++i)
 	//	for(int j = 0; j < 2; ++j)
 	//		m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ BACKGROUND_SIZE.x - i*163, position.y - 350*j }));
@@ -15,14 +15,14 @@ Player::Player(int numOfRaftMen, const sf::Vector2f& position, Board* board)
 	//	m_raft.emplace_back(std::make_shared<RaftBlock>(sf::Vector2f{ position.x + i * 163, position.y }));
 	//std::unique_ptr<GameObject> p;
 	//auto weapon = new Weapon();
-	//m_weapons.emplace_back(std::make_shared<Weapon>());
+	m_weapons.emplace_back(std::make_shared<Weapon>());
 }
 
 void Player::initRaftMen()
 {
 	for (int i = 0; i < m_crewSize; ++i)
 	{
-		auto self = this->shared_from_this();
+		auto self = this;
 		auto raftMan = new RaftMan(self, sf::Vector2f(m_position.x, m_position.y - 200));
 		m_raftMen.emplace_back(raftMan);
 		m_board->addObject(raftMan);
@@ -31,13 +31,13 @@ void Player::initRaftMen()
 
 void Player::update()
 {
-	//cause raftMan uses shared_from_this
-	static bool raftMenInit = false;
-	if (!raftMenInit)
-	{
-		initRaftMen();
-		raftMenInit = true;
-	}
+	////cause raftMan uses shared_from_this
+	//static bool raftMenInit = false;
+	//if (!raftMenInit)
+	//{
+	//	initRaftMen();
+	//	raftMenInit = true;
+	//}
 
 
 	for (auto& pawn : m_raftMen)
@@ -61,11 +61,13 @@ void Player::update()
 
 void Player::draw(sf::RenderWindow* window)
 {
-	for (const auto& x : m_raft)
-		x->draw(window);
+	//for (const auto& x : m_raft)
+	//	x->draw(window);
 
-	for (const auto& x : m_raftMen)
-		x->draw(window);
+	//for (const auto& x : m_raftMen)
+	//	x->draw(window);
+	//for (const auto& x: m_raftMen)
+	//	if(x->)
 
 }
 
@@ -83,4 +85,14 @@ void Player::play(RenderWindow* window, const sf::Event& event)
 	//needs to manage internal turns
 	m_playing = true;
 	m_raftMen[0]->play(window, event);
+}
+
+sf::Vector2f Player::getPlayerPosition() const
+{
+	return m_raftMen[rand() % m_raftMen.size()]->getPosition();
+}
+
+void Computer::play(RenderWindow* window, const sf::Event& event)
+{
+	auto playerPosition = getBoard()->getPlayerPosition();
 }

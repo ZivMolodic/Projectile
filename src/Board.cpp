@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "Player.h"
+#include "Collisions.h"
 
 Board::Board(const sf::Vector2f& playerPosition, const sf::Vector2f& computerPosition, int numOfRaftMen)
     : m_user(nullptr), m_computer(nullptr)
@@ -23,9 +24,35 @@ void Board::addObject(GameObject* object)
 
 void Board::draw(RenderWindow* window) 
 { 
-	for (auto& object : m_objects) object->draw(window);
+	for (auto& object : m_objects)
+        if(typeid(*object).name() != "RaftMan")
+            object->draw(window);
+
+    for (auto& object : m_objects)
+        if (typeid(*object).name() == "RaftMan")
+            object->draw(window);
 }
 void Board::play(RenderWindow* window, const sf::Event& event) 
 { 
 	m_user->play(window, event); 
+}
+
+void Board::handleCollisions()
+{
+    for (auto it1 = m_objects.begin(); it1 != m_objects.end(); ++it1) {
+        for (auto it2 = std::next(it1); it2 != m_objects.end(); ++it2) {
+            if ((*it1)->getRec().intersects((*it2)->getRec()))
+                processCollision(**it1, **it2);
+
+        }
+    }
+
+    if (m_user->shooting())
+    {
+        for (auto object : m_objects)
+            if (m_user->getObjectile()->getRec().intersects(object->getRec()))
+                processCollision(*(m_user->getObjectile()), *object);
+    }
+
+
 }
