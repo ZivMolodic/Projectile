@@ -6,6 +6,14 @@ Player::Player(int numOfRaftMen, const sf::Vector2f& position, Board* board)
 	auto raft = new RaftBlock(position);
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
+
+	raft = new RaftBlock({ position.x, position.y - 90});
+	m_raft.emplace_back(raft);
+	m_board->addObject(raft);
+
+	raft = new RaftBlock({ position.x + 100, position.y - 90 });
+	m_raft.emplace_back(raft);
+	m_board->addObject(raft);
 	
 	initRaftMen();
 	//for(int i=0; i < 3; ++i)
@@ -23,7 +31,7 @@ void Player::initRaftMen()
 	for (int i = 0; i < m_crewSize; ++i)
 	{
 		auto self = this;
-		auto raftMan = new RaftMan(self, sf::Vector2f(m_position.x, m_position.y - 200));
+		auto raftMan = new RaftMan(self, sf::Vector2f(m_position.x, m_position.y - 20));
 		m_raftMen.emplace_back(raftMan);
 		m_board->addObject(raftMan);
 	}
@@ -94,5 +102,41 @@ sf::Vector2f Player::getPlayerPosition() const
 
 void Computer::play(RenderWindow* window, const sf::Event& event)
 {
-	auto playerPosition = getBoard()->getPlayerPosition();
+	if(!isPlaying())
+	{
+		//illustrates computer thinking
+		//sf::Clock timer;
+		//timer.restart();
+		//while (timer.getElapsedTime().asSeconds() < 2.f);
+
+		setPlay();
+		m_playerPosition = getBoard()->getPlayerPosition();
+		m_turn = (m_turn+1) % m_raftMen.size();
+		//m_destination = m_raft[rand() % m_raft.size()]->getPosition();
+		m_destination = m_raft[2]->getPosition();
+	}
+	
+	if (std::abs(m_raftMen[m_turn]->getPosition().y - m_destination.y + m_raftMen[m_turn]->getRec().height) > 1 ||
+		std::abs(m_raftMen[m_turn]->getPosition().x - m_destination.x) > 1)
+			walk(m_destination, window, event, m_turn);
+}
+
+void Computer::walk(const sf::Vector2f& destination, RenderWindow* window, const sf::Event& event, int turn)
+{
+	if(destination.y < m_raftMen[turn]->getPosition().y)
+		for(auto& raft: m_raft)
+			if(std::abs(raft->getPosition().x - m_raftMen[turn]->getPosition().x) < 1)
+			{
+				m_raftMen[turn]->play(window, event, Direction::Up);
+				break;
+			}
+
+	if (m_raftMen[turn]->getPosition().x < destination.x)
+		m_raftMen[turn]->play(window, event, Direction::Right);
+	
+	else if (m_raftMen[turn]->getPosition().x > destination.x)
+		m_raftMen[turn]->play(window, event, Direction::Left);
+
+	//else if (m_raftMen[turn]->getPosition().y > destination.y + m_raftMen[turn]->getRec().height)
+	//	m_raftMen[turn]->play(window, event, Direction::Up);
 }

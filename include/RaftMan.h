@@ -17,7 +17,7 @@ public:
 	
 	void draw(sf::RenderWindow* window, const sf::Vector2f& position = sf::Vector2f()) const override;
 	void useWeapon(std::weak_ptr<Weapon> weapon) { m_weapon = weapon; }
-	void play(sf::RenderWindow* window, const sf::Event& event);
+	void play(sf::RenderWindow* window, const sf::Event& event, const Direction& direction = Direction::NA);
 	void update() override;
 	void handleExplosion(const Explosion& explosion);
 	void handleCollision(const sf::RectangleShape& rec = sf::RectangleShape()) override;

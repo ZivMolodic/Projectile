@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 class Player;
+class Computer;
 class RaftBlock;
 
 class Board
@@ -15,10 +16,10 @@ public:
 	void draw(RenderWindow* window);
 	void play(RenderWindow* window, const sf::Event& event);
 	void handleCollisions();
-	sf::Vector2f getPlayerPosition() { return m_user->getPlayerPosition(); }
+	sf::Vector2f getPlayerPosition() const;
 
 private:
 	std::shared_ptr<Player> m_user;
-	std::shared_ptr<Player> m_computer;
+	std::shared_ptr<Computer> m_computer;
 	std::vector<GameObject*> m_objects;
 };

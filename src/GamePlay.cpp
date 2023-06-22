@@ -12,7 +12,7 @@ GamePlay::GamePlay()
 
 void GamePlay::gameLoop(RenderWindow* window)
 {
-    auto board = Board(Vector2f{ 180, 400 }, Vector2f{ 280,400 }, 1);
+    auto board = Board(Vector2f{ 180, 400 }, Vector2f{ 380,400 }, 1);
     //auto player = std::make_shared<Player>(1, Vector2f{ 180, 400 });
 
     bool playerTurn = true;

@@ -14,6 +14,7 @@ class Player
 {
 public:
     Player(int numOfRaftMen, const sf::Vector2f& position, Board* board);
+    virtual ~Player() = default;
     void update();
     void draw(sf::RenderWindow* window);
     void getWeapon(RaftMan& pawn, int i);
@@ -41,6 +42,7 @@ protected:
     Board* getBoard() { return m_board; }
     vector<std::unique_ptr<RaftBlock>> m_raft;
     vector<std::unique_ptr<RaftMan>> m_raftMen;
+    void setPlay() { m_playing = true; }
 private:
     void initRaftMen();
 
@@ -54,8 +56,12 @@ private:
 class Computer: public Player
 {
 public:
+    Computer(int numOfRaftMen, const sf::Vector2f& position, Board* board): Player(numOfRaftMen, position, board), m_turn(0){}
     void play(RenderWindow* window, const sf::Event& event) override;
 
 private:
-    void walk(const sf::Vector2f& destination);
+    void walk(const sf::Vector2f& destination, RenderWindow* window, const sf::Event& event, int turn);
+    int m_turn;
+    sf::Vector2f m_playerPosition;
+    sf::Vector2f m_destination;
 };

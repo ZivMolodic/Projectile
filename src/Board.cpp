@@ -10,10 +10,14 @@ Board::Board(const sf::Vector2f& playerPosition, const sf::Vector2f& computerPos
     // Create the Players after the Board object is fully constructed
     m_user = std::make_shared<Player>(numOfRaftMen, playerPosition, this);
     m_user->update();
-    m_computer = std::make_shared<Player>(numOfRaftMen, computerPosition, this);
+    m_computer = std::make_shared<Computer>(numOfRaftMen, computerPosition, this);
     m_computer->update();
 }
 
+sf::Vector2f Board::getPlayerPosition() const
+{ 
+    return m_user->getPlayerPosition(); 
+}
 
 void Board::addObject(GameObject* object)
 {
@@ -34,7 +38,8 @@ void Board::draw(RenderWindow* window)
 }
 void Board::play(RenderWindow* window, const sf::Event& event) 
 { 
-	m_user->play(window, event); 
+	//m_user->play(window, event);
+    m_computer->play(window, event);
 }
 
 void Board::handleCollisions()

@@ -26,11 +26,11 @@ void RaftMan::draw(sf::RenderWindow* window, const sf::Vector2f& position) const
 		m_weapon.lock()->draw(window, { m_shape->getPosition().x, getPosition().y + 5 });
 }
 
-void RaftMan::play(sf::RenderWindow* window, const sf::Event& event)
+void RaftMan::play(sf::RenderWindow* window, const sf::Event& event, const Direction& direction)
 {
 
 	m_physics->setWalking(false);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || direction == Direction::Left)
 	{
 		m_shape->setScale({ -1,1 });
 		if (m_physics->isJumping())
@@ -43,7 +43,7 @@ void RaftMan::play(sf::RenderWindow* window, const sf::Event& event)
 		}
 	}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || direction == Direction::Right)
 	{
 		m_shape->setScale({ 1,1 });
 		if(m_physics->isJumping())
@@ -55,7 +55,7 @@ void RaftMan::play(sf::RenderWindow* window, const sf::Event& event)
 			m_physics->setWalking(true);
 		}
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !m_physics->isJumping())
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || direction == Direction::Up) && !m_physics->isJumping())
 	{
 		m_physics->setJumping(true);
 		m_physics->setVelocity({ 0, -12 });
