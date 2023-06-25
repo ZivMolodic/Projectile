@@ -2,41 +2,135 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include "Resources.h"
+#include "Macros.h"
 
 using namespace sf;
 
 class Button
 {
 public:
-	Button(Vector2f position, Vector2f size, char c, std::string text = "");
+	Button(Vector2f position, Vector2f size, char c);
 	~Button() = default;
-	virtual void play(RenderWindow* window) = 0;
 	FloatRect globalBounds() const { return m_picture.getGlobalBounds(); }
-	void draw(RenderWindow* window, sf::Vector2f cursorLocation); 
-private:
-	Vector2f m_position;
-	Text m_text;
+	virtual void draw(RenderWindow* window, sf::Vector2f cursorLocation); 
+protected:
 	RectangleShape m_picture;
 };
 
-class PlayButton : public Button
+class MainMenuButton : public Button
 {
 public:
-	PlayButton(Vector2f position, Vector2f size, char c, std::string text = "");
+	MainMenuButton(Vector2f position)
+		:Button(position, Vector2f{ 200, 70 }, 'B'), m_text("", Resources::instance().getFont()) {
+		m_text.setPosition(position);
+		m_text.setCharacterSize(50);
+		m_text.setOrigin(m_text.getLocalBounds().width / 2.f, m_text.getLocalBounds().height / 2.f);
+		m_text.setFillColor(sf::Color::White);
+		m_text.setOutlineThickness(4);
+		m_text.setOutlineColor(sf::Color::Black);
+	}
+	void draw(RenderWindow* window, sf::Vector2f cursorLocation) override
+	{
+		Button::draw(window, cursorLocation);
+		window->draw(m_text);
+	}
+	virtual void play(RenderWindow* window) = 0;
+protected:
+	sf::Text m_text;
+};
+
+class PlayButton : public MainMenuButton
+{
+public:
+	PlayButton(Vector2f position)
+		:MainMenuButton(position) 
+	{
+		m_text.setString("PLAY");
+		m_text.setOrigin(Vector2f{ m_text.getGlobalBounds().width / 2.f, m_text.getGlobalBounds().height / 2.f + 10.f });
+	}
 	void play(RenderWindow* window) override;
 };
 
-class HelpButton : public Button
+
+class HelpButton : public MainMenuButton
 {
 public:
-	HelpButton(Vector2f position, Vector2f size, char c, std::string text = "");
+	HelpButton(Vector2f position)
+		:MainMenuButton(position) 
+	{
+		m_text.setString("HELP");
+		m_text.setOrigin(Vector2f{ m_text.getGlobalBounds().width / 2.f, m_text.getGlobalBounds().height / 2.f + 10.f });
+	}
 	void play(RenderWindow* window) override;
 };
 
-class UpRaftButton : public Button
+
+class ExitButton : public MainMenuButton
 {
 public:
-	UpRaftButton(Vector2f position, Vector2f size, char c)
-		:Button(position, size, c) {}
-	void play(RenderWindow* window) override {};
+	ExitButton(Vector2f position)
+		:MainMenuButton(position)
+	{
+		m_text.setString("EXIT");
+		m_text.setOrigin(Vector2f{ m_text.getGlobalBounds().width / 2.f, m_text.getGlobalBounds().height / 2.f + 10.f });
+	}
+	void play(RenderWindow* window) override { window->close(); };
+};
+
+
+class GameMenuButton : public Button
+{
+public:
+	GameMenuButton(Vector2f position, char c)
+		:Button(position, Vector2f{ 80, 80 }, c) {}
+	virtual enum Menu choose() = 0;
+};
+
+
+class UpRaftButton : public GameMenuButton
+{
+public:
+	UpRaftButton(Vector2f position)
+		:GameMenuButton(position, 'U') {}
+	enum Menu choose() override { return UP_RAFT; } 
+};
+
+class DownRaftButton : public GameMenuButton
+{
+public:
+	DownRaftButton(Vector2f position)
+		:GameMenuButton(position, 'd') {}
+	enum Menu choose() override { return DOWN_RAFT; } 
+};
+
+class GrenadeButton : public GameMenuButton
+{
+public:
+	GrenadeButton(Vector2f position)
+		:GameMenuButton(position, 'G') {}
+	enum Menu choose() override { return GRENADE; } 
+};
+
+class TennisButton : public GameMenuButton
+{
+public:
+	TennisButton(Vector2f position)
+		:GameMenuButton(position, 'T') {}
+	enum Menu choose() override { return TENNIS; } 
+};
+
+class MissileButton : public GameMenuButton
+{
+public:
+	MissileButton(Vector2f position)
+		:GameMenuButton(position, 't') {}
+	enum Menu choose() override { return MISSILE; }
+};
+
+class GuidedMissileButton : public GameMenuButton
+{
+public:
+	GuidedMissileButton(Vector2f position)
+		:GameMenuButton(position, 'M') {}
+	enum Menu choose() override { return GUIDED_MISSILE; }
 };

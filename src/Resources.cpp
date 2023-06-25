@@ -1,10 +1,77 @@
 #include "Resources.h"
 #include <vector>
+#include "Direction.h"
+
+namespace
+{
+    AnimationData MissileData()
+    {
+        const auto size = sf::Vector2i(40, 40);
+        const auto initSpace = sf::Vector2i(1, 2);
+        const auto middleSpace = sf::Vector2i(0, 10);
+
+        auto missile = AnimationData{};
+        auto currentStart = initSpace;
+
+        auto nextStart = [&]()
+        {
+            currentStart += middleSpace;
+            currentStart.y += size.y;
+            return currentStart;
+        };
+
+        missile.m_data[Direction::Right].emplace_back(currentStart, size);
+        missile.m_data[Direction::Right].emplace_back(nextStart(), size);
+        missile.m_data[Direction::Down].emplace_back(nextStart(), size);
+        missile.m_data[Direction::Down].emplace_back(nextStart(), size);
+        missile.m_data[Direction::Left].emplace_back(nextStart(), size);
+        missile.m_data[Direction::Left].emplace_back(nextStart(), size);
+        missile.m_data[Direction::Up].emplace_back(nextStart(), size);
+        missile.m_data[Direction::Up].emplace_back(nextStart(), size);
+
+        return missile;
+    }
+
+    AnimationData GuidedMissileData()
+    {
+        const auto size = sf::Vector2i(40, 40);
+        const auto initSpace = sf::Vector2i(851, 2);
+        const auto middleSpace = sf::Vector2i(0, 10);
+
+        auto guidedMissile = AnimationData{};
+        auto currentStart = initSpace;
+
+        auto nextStart = [&]()
+        {
+            currentStart += middleSpace;
+            currentStart.y += size.y;
+            return currentStart;
+        };
+
+        guidedMissile.m_data[Direction::Right].emplace_back(currentStart, size);
+        guidedMissile.m_data[Direction::Right].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Right].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
+
+        return guidedMissile;
+    }
+}
 
 Resources::Resources()
+    :m_animation(MAX)
 {
 	loadGraphics();
 	//loadSounds();
+    m_animation[Missile] = MissileData();
+    m_animation[GuidedMissile] = GuidedMissileData();
 }
 
 Resources& Resources::instance()
@@ -14,12 +81,16 @@ Resources& Resources::instance()
 }
 
 void Resources::loadGraphics()
-{	
-	std::vector <std::string> pngNames = { "menuBlock.png","boy.png" ,
+{	 
+	std::vector <std::string> pngNames = { "guided_missile.png",
+        "missile.png", "down_raft_button.png",
+			 "tennis_button.png", "up_raft_button.png",
+			"guided_missile_button.png","grenade_button.png"
+		,"missile_button.png", "menuBlock.png","boy.png" ,
 		"main_background.png" ,"gameplay_background.png" ,
-		"grenade.png", "grenade_launcher.png", "raft.png" };
+		"grenade.png", "grenade_launcher.png", "raft.png", "up_raft.png"};
 
-	std::vector <char> pngChars = { 'B', 'r', 'm', 'b','*', 'g','#' };
+	std::vector <char> pngChars = {'S','s', 'd', 'T', 'U','M', 'G', 't', 'B', 'r', 'm', 'b','*', 'g','#', 'u'};
 	sf::RenderWindow window;
 	for (int i = 0; i < pngNames.size(); i++)
 	{
@@ -80,3 +151,4 @@ sf::Texture & Resources::getTexture(char c)
 //{
 //	m_backGround.stop();
 //}
+

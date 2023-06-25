@@ -11,15 +11,15 @@
 
 MainMenu::MainMenu()
 {
-    float y = BUTTONS_POSITION.y;
+    float y = BUTTONS_POSITION.y + 20;
     //le'adken et mispar hakaftorim
-    float spaceBetweenButton = (WINDOW_SIZE.y - SPACE_WITHOUT_BUTTONS * 2.f) / (2 - 1);
+    float spaceBetweenButton = (WINDOW_SIZE.y - SPACE_WITHOUT_BUTTONS * 2.f) / (3 - 1);
 
-    m_buttons.push_back(std::make_unique<PlayButton>(
-        Vector2f{ BUTTONS_POSITION.x , y }, Vector2f{ 200, 70 }, 'B', "PLAY"));
+    m_buttons.push_back(std::make_unique<PlayButton>(Vector2f{ BUTTONS_POSITION.x , y }));
     y += spaceBetweenButton;
-    m_buttons.push_back(std::make_unique<HelpButton>(
-        Vector2f{ BUTTONS_POSITION.x , y }, Vector2f{ 200, 70 }, 'B', "EXIT"));
+    m_buttons.push_back(std::make_unique<HelpButton>(Vector2f{ BUTTONS_POSITION.x , y }));
+    y += spaceBetweenButton;
+    m_buttons.push_back(std::make_unique<ExitButton>(Vector2f{ BUTTONS_POSITION.x , y }));
 
     m_backGround.setTexture(&Resources::instance().getTexture('m'));
     m_backGround.setSize(WINDOW_SIZE);

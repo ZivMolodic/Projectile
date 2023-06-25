@@ -5,6 +5,7 @@
 #include "RaftBlock.h"
 #include "RaftMan.h"
 #include "Weapon.h"
+#include "Button.h"
 
 using namespace std;
 class RaftMan;
@@ -15,9 +16,10 @@ public:
     Player(int numOfRaftMen, const sf::Vector2f& position);
     void update();
     void draw(sf::RenderWindow* window);
-    void addRaft(RaftMan& pawn);
-    bool placeRaft(RaftBlock& raftBlock, Vector2i cursorLocation);
-    void getWeapon(RaftMan& pawn, int i);
+    void addRaft(RaftMan& pawn, const enum Menu& button);
+    bool placeRaft(const enum Menu& button, RaftBlock& raftBlock, const Vector2i& cursorLocation);
+    Menu buttonPressed(RenderWindow* window, const sf::Event& event);
+    void getWeapon(RaftMan& pawn, enum Menu weapon);
     void done(RaftMan& pawn) { m_playing = false; }
     void play(RenderWindow* window, const sf::Event& event);
     bool isPlaying() const { return m_playing; }
@@ -39,7 +41,7 @@ public:
 
 private:
     void initRaftMen();
-
+    void initMenu();
 
     vector<std::shared_ptr<RaftBlock>> m_raft;//1 ,2 ,null, 4 ,5
     vector<std::shared_ptr<Weapon>> m_weapons;
@@ -47,5 +49,6 @@ private:
     bool m_playing;
     int m_crewSize;
     sf::Vector2f m_position;
-  //  std::vector<std::unique_ptr<Button>> m_menu;
+    std::vector<std::unique_ptr<GameMenuButton>> m_menu;
+    enum Menu m_lastButton;
 };

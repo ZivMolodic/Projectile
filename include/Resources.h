@@ -3,6 +3,7 @@
 #include <map>
 #include "SFML/Graphics.hpp"
 #include <SFML/audio.hpp>
+#include "AnimationData.h"
 
 class MovingObjects;
 
@@ -13,6 +14,12 @@ class MovingObjects;
 class Resources
 {
 public:
+	enum Objects
+	{
+		Missile,
+		GuidedMissile,
+		MAX
+	};
 	Resources(const Resources&) = delete;
 	void operator = (const Resources&) = delete;
 	static Resources& instance();
@@ -22,14 +29,18 @@ public:
 	void playBackGround();
 	void volumeBackGround(int vol);
 	void stopBackGroundMusic();*/
-	
+	const AnimationData& animationData(Objects object) { return m_animation[object]; }
+
 private:
 	Resources();
 	void loadGraphics();
 //	void loadSounds();
+	std::vector<AnimationData> m_animation;
 
 	std::map <char, sf::Texture> m_textures;
 	sf::Font m_font;
+	sf::Texture m_texture;
+
 //	std::vector<sf::SoundBuffer> m_sounds;
 //	sf::Music m_backGround;
 //	sf::Sound m_sound;
