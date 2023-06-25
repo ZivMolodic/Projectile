@@ -12,7 +12,7 @@ GamePlay::GamePlay()
 
 void GamePlay::gameLoop(RenderWindow* window)
 {
-    auto board = Board(Vector2f{ 180, 400 }, Vector2f{ 380,400 }, 1);
+    auto board = Board(Vector2f{ 20, 400 }, Vector2f{ 450,400 }, 1);
     //auto player = std::make_shared<Player>(1, Vector2f{ 180, 400 });
 
     bool playerTurn = true;
@@ -20,7 +20,7 @@ void GamePlay::gameLoop(RenderWindow* window)
     auto view = sf::View(sf::FloatRect(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y));
 
     
-    window->setFramerateLimit(30);
+    window->setFramerateLimit(38);
     //openShot(window, player);
 
     while (window->isOpen())
@@ -70,9 +70,9 @@ void GamePlay::gameLoop(RenderWindow* window)
         //    player->play(window, event);
         
 
-        //if (player->shooting())
+        //if (board->shooting())
         //{
-        //    sf::Vector2f objPosition = player->getObjectilePosition();
+        //    sf::Vector2f objPosition = board->getObjectilePosition();
         //    if (objPosition.x - view.getSize().x/2.f > 0 && objPosition.x + view.getSize().x/2.f <= m_backGround.getSize().x)
         //        view.setCenter({ objPosition.x, view.getCenter().y });
         //}

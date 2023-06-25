@@ -11,14 +11,16 @@ public:
 	{}
 	void draw(sf::RenderWindow* window, const sf::Vector2f& position = sf::Vector2f()) const override 
 	{ 
-		window->draw(*m_shape); 
+		window->draw(*m_shape);
+		auto rec = this->getRectangle();
+		rec.setFillColor(sf::Color::Blue);
+		window->draw(rec);
 	}
 	void update() override {}
 	sf::RectangleShape getRectangle() const
 	{
-		auto rec = sf::RectangleShape({ 100, 20 });
-		rec.setPosition(getPosition().x - 50, getPosition().y - 10);
-		rec.setFillColor(sf::Color::Magenta);
+		auto rec = sf::RectangleShape({ 160, 20 });
+		rec.setPosition(getPosition().x - 80, getPosition().y - 10);
 		return rec; 
 	}
 

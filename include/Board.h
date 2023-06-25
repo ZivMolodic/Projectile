@@ -16,7 +16,7 @@ public:
 	void draw(RenderWindow* window);
 	void play(RenderWindow* window, const sf::Event& event);
 	void handleCollisions();
-	sf::Vector2f getPlayerPosition() const;
+	sf::Vector2f getUserPosition() const;
 
 private:
 	std::shared_ptr<Player> m_user;

@@ -6,11 +6,14 @@ Weapon:: Weapon()
 	m_shape->setOrigin({ 0 , 12.5f });
 }
 
-void Weapon::shot(const sf::Vector2f& destination)
+void Weapon::shot(const sf::Vector2f& destination, const sf::Vector2f& position)
 {
-	auto position = m_shape->getTransform().transformPoint({ m_shape->getLocalBounds().left + m_shape->getLocalBounds().width, m_shape->getLocalBounds().top + 7.5f });
+	if (position != sf::Vector2f())
+		m_shape->setPosition(position);
 
-	m_objectile = std::make_shared<Objectile>(position, destination);
+	auto launchPosition = m_shape->getTransform().transformPoint({ m_shape->getLocalBounds().left + m_shape->getLocalBounds().width, m_shape->getLocalBounds().top + 7.5f });
+
+	m_objectile = std::make_shared<Objectile>(launchPosition, destination);
 }
 
 void Weapon::update()

@@ -56,12 +56,17 @@ private:
 class Computer: public Player
 {
 public:
-    Computer(int numOfRaftMen, const sf::Vector2f& position, Board* board): Player(numOfRaftMen, position, board), m_turn(0){}
+    Computer(int numOfRaftMen, const sf::Vector2f& position, Board* board): Player(numOfRaftMen, position, board), m_turn(0), m_play(false){}
     void play(RenderWindow* window, const sf::Event& event) override;
 
 private:
-    void walk(const sf::Vector2f& destination, RenderWindow* window, const sf::Event& event, int turn);
+    void walk(const sf::Vector2f& destination, RenderWindow* window, const sf::Event& event);
+    void aim(const sf::Vector2f& target, RenderWindow* window, const sf::Event& event);
+    sf::Vector2f calculateDirection(const sf::Vector2f& shooterPosition, const sf::Vector2f& targetPosition, float projectileSpeed);
+    float calculateVelocity(const sf::Vector2f& target, const sf::Vector2f& position);
+    bool onEdge(float position) const;
     int m_turn;
-    sf::Vector2f m_playerPosition;
+    sf::Vector2f m_userPosition;
     sf::Vector2f m_destination;
+    bool m_play;
 };

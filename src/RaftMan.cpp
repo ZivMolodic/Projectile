@@ -30,32 +30,33 @@ void RaftMan::play(sf::RenderWindow* window, const sf::Event& event, const Direc
 {
 
 	m_physics->setWalking(false);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || direction == Direction::Left)
+	m_physics->setVelocity({ 0 , m_physics->getVelocity().y });
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && direction == Direction::NA) || direction == Direction::Left)
 	{
 		m_shape->setScale({ -1,1 });
 		if (m_physics->isJumping())
-			m_physics->setVelocity({ -1.5f,m_physics->getVelocity().y });
+			m_physics->setVelocity({ -2.9f,m_physics->getVelocity().y });
 		else
 		{
-			//m_shape->move({ 1,0 });
-			m_physics->setVelocity({ -1,0 });
+			m_shape->move({ -1,0 });
+			m_physics->setVelocity({ -0.5,0 });
 			m_physics->setWalking(true);
 		}
 	}
 
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || direction == Direction::Right)
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && direction == Direction::NA) || direction == Direction::Right)
 	{
 		m_shape->setScale({ 1,1 });
 		if(m_physics->isJumping())
-			m_physics->setVelocity({ 1.5f,m_physics->getVelocity().y});
+			m_physics->setVelocity({ 2.9f,m_physics->getVelocity().y});
 		else
 		{
-			//m_shape->move({ 1,0 });
-			m_physics->setVelocity({ 1,0 });
+			m_shape->move({ 1,1 });
+			m_physics->setVelocity({ 0.5,0 });
 			m_physics->setWalking(true);
 		}
 	}
-	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || direction == Direction::Up) && !m_physics->isJumping())
+	else if (((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && direction == Direction::NA) || direction == Direction::Up) && !m_physics->isJumping())
 	{
 		m_physics->setJumping(true);
 		m_physics->setVelocity({ 0, -12 });
@@ -79,11 +80,17 @@ void RaftMan::play(sf::RenderWindow* window, const sf::Event& event, const Direc
 
 }
 
+void RaftMan::shoot(const sf::Vector2f& velocity)
+{
+	m_team->getWeapon(*this, 0);
+	m_weapon.lock()->shot(velocity, { m_shape->getPosition().x, getPosition().y + 5 });
+}
+
 void RaftMan::handleCollision(const sf::RectangleShape& rec)
 {
 	if (m_physics->isJumping() && m_physics->getVelocity().y < 0)
 		return;
-	if (auto update = m_physics->manageCollision(m_shape->getPosition(), rec); update != sf::Vector2f(0, 0))
+	else if (auto update = m_physics->manageCollision(m_shape->getPosition(), rec); update != sf::Vector2f(0, 0))
 	{
 		m_physics->setJumping(false);
 		m_shape->setPosition(update);

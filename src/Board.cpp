@@ -14,7 +14,7 @@ Board::Board(const sf::Vector2f& playerPosition, const sf::Vector2f& computerPos
     m_computer->update();
 }
 
-sf::Vector2f Board::getPlayerPosition() const
+sf::Vector2f Board::getUserPosition() const
 { 
     return m_user->getPlayerPosition(); 
 }
@@ -57,6 +57,13 @@ void Board::handleCollisions()
         for (auto object : m_objects)
             if (m_user->getObjectile()->getRec().intersects(object->getRec()))
                 processCollision(*(m_user->getObjectile()), *object);
+    }
+
+    if (m_computer->shooting())
+    {
+        for (auto object : m_objects)
+            if (m_computer->getObjectile()->getRec().intersects(object->getRec()))
+                processCollision(*(m_computer->getObjectile()), *object);
     }
 
 

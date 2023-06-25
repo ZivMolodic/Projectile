@@ -7,11 +7,15 @@ Player::Player(int numOfRaftMen, const sf::Vector2f& position, Board* board)
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
 
-	raft = new RaftBlock({ position.x, position.y - 90});
+	raft = new RaftBlock({ position.x + 160, position.y});
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
 
-	raft = new RaftBlock({ position.x + 100, position.y - 90 });
+	raft = new RaftBlock({ position.x + 160*3, position.y });
+	m_raft.emplace_back(raft);
+	m_board->addObject(raft);
+
+	raft = new RaftBlock({ position.x + 160, position.y - 100 });
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
 	
@@ -102,7 +106,7 @@ sf::Vector2f Player::getPlayerPosition() const
 
 void Computer::play(RenderWindow* window, const sf::Event& event)
 {
-	if(!isPlaying())
+	if (!isPlaying())
 	{
 		//illustrates computer thinking
 		//sf::Clock timer;
@@ -110,33 +114,135 @@ void Computer::play(RenderWindow* window, const sf::Event& event)
 		//while (timer.getElapsedTime().asSeconds() < 2.f);
 
 		setPlay();
-		m_playerPosition = getBoard()->getPlayerPosition();
-		m_turn = (m_turn+1) % m_raftMen.size();
+		m_userPosition = getBoard()->getUserPosition();
+		m_turn = (m_turn + 1) % m_raftMen.size();
 		//m_destination = m_raft[rand() % m_raft.size()]->getPosition();
 		m_destination = m_raft[2]->getPosition();
 	}
-	
-	if (std::abs(m_raftMen[m_turn]->getPosition().y - m_destination.y + m_raftMen[m_turn]->getRec().height) > 1 ||
-		std::abs(m_raftMen[m_turn]->getPosition().x - m_destination.x) > 1)
-			walk(m_destination, window, event, m_turn);
+	if (m_play)
+		m_play = true;
+	if (std::abs(m_raftMen[m_turn]->getPosition().y + 40 - m_destination.y) > 2||
+		std::abs(m_raftMen[m_turn]->getPosition().x - m_destination.x) > 2)
+		walk(m_destination, window, event);
+	else
+		aim(m_userPosition, window, event);
+		//m_raftMen[m_turn]->play(window, event);
 }
 
-void Computer::walk(const sf::Vector2f& destination, RenderWindow* window, const sf::Event& event, int turn)
+void Computer::walk(const sf::Vector2f& destination, RenderWindow* window, const sf::Event& event)
 {
-	if(destination.y < m_raftMen[turn]->getPosition().y)
-		for(auto& raft: m_raft)
-			if(std::abs(raft->getPosition().x - m_raftMen[turn]->getPosition().x) < 1)
+	bool goingUp = false;
+
+	if(destination.y < m_raftMen[m_turn]->getPosition().y)
+	{
+		for (auto& raft : m_raft)
+			if (std::abs(raft->getPosition().x - m_raftMen[m_turn]->getPosition().x) <= 5 &&
+				raft->getPosition().y < m_raftMen[m_turn]->getPosition().y)
 			{
-				m_raftMen[turn]->play(window, event, Direction::Up);
+				m_raftMen[m_turn]->play(window, event, Direction::Up);
+				goingUp = true;
 				break;
 			}
+	}
+	if(!goingUp)
+	{
+		if (onEdge(m_raftMen[m_turn]->getPosition().x))
+		{
+			auto position = m_raftMen[m_turn]->getPosition();
+			if (auto find = find_if(m_raft.begin(), m_raft.end(),
+				[&position](const std::unique_ptr<RaftBlock>& r) { return std::abs(position.x -
+					r->getPosition().x) < 5 && position.y > r->getPosition().y; }); find != m_raft.end())
+				m_destination = find->get()->getPosition();
+			else
+				m_destination = sf::Vector2f(m_raftMen[m_turn]->getPosition().x, m_raftMen[m_turn]->getPosition().y + 40);
+			m_play = true;
+		}
 
-	if (m_raftMen[turn]->getPosition().x < destination.x)
-		m_raftMen[turn]->play(window, event, Direction::Right);
-	
-	else if (m_raftMen[turn]->getPosition().x > destination.x)
-		m_raftMen[turn]->play(window, event, Direction::Left);
+		else if (m_raftMen[m_turn]->getPosition().x - destination.x < -1)
+			m_raftMen[m_turn]->play(window, event, Direction::Right);
+
+		else if (m_raftMen[m_turn]->getPosition().x - destination.x > 1)
+			m_raftMen[m_turn]->play(window, event, Direction::Left);
+		else
+			m_destination = sf::Vector2f(m_raftMen[m_turn]->getPosition().x, m_raftMen[m_turn]->getPosition().y + 40);
+	}
 
 	//else if (m_raftMen[turn]->getPosition().y > destination.y + m_raftMen[turn]->getRec().height)
 	//	m_raftMen[turn]->play(window, event, Direction::Up);
+}
+
+bool Computer::onEdge(float position) const
+{
+	//if(m_destination.x > position)
+	//{
+	//	for (const auto& raft : m_raft)
+	//	{
+	//		if (std::abs(position + 80 - (raft->getRec().top + raft->getRec().width)) < 4)
+	//			if (auto search = find_if(m_raft.begin(), m_raft.end(),
+	//				[&raft](const std::unique_ptr<RaftBlock>& r) { return std::abs(raft->getRec().top + raft->getRec().width -
+	//					r->getRec().top) < 3; }); search == m_raft.end())
+	//				return true;
+	//	}
+	//}
+	if(auto find = find_if(m_raft.begin(), m_raft.end(),
+		[position](const std::unique_ptr<RaftBlock>& r) { return std::abs(position -
+			r->getPosition().x) < 5; }); find != m_raft.end())
+	{
+		if (m_destination.x > position)
+		{
+			if (auto search = find_if(m_raft.begin(), m_raft.end(),
+				[position](const std::unique_ptr<RaftBlock>& r) { return std::abs(position + 160 -
+					r->getPosition().x) < 5; }); search == m_raft.end())
+				return true;
+
+			return false;
+		}
+		else if (m_destination.x < position)
+		{
+			if (auto search = find_if(m_raft.begin(), m_raft.end(),
+				[position](const std::unique_ptr<RaftBlock>& r) { return std::abs(position - 160 -
+					r->getPosition().x) < 5; }); search == m_raft.end())
+				return true;
+
+			return false;
+		}
+	}
+
+	return false;
+}
+float Computer::calculateVelocity(const sf::Vector2f& target, const sf::Vector2f& position)
+{
+	float time = (2 * 20) / GRAVITY;
+	
+	//auto res = (target.x - position.x) / (time*2.3f);
+	//return res;
+	return (target.x - position.x) / (time * 1.9f);
+}
+void Computer::aim(const sf::Vector2f& target, RenderWindow* window, const sf::Event& event)
+{
+	//m_raftMen[m_turn]->shoot(calculateDirection(m_raftMen[m_turn]->getPosition(), target, 13.f));
+	//m_raftMen[m_turn]->shoot({-11,-11});
+	m_raftMen[m_turn]->shoot(sf::Vector2f(1 * calculateVelocity(target, m_raftMen[m_turn]->getPosition()), -20));
+
+}
+
+sf::Vector2f Computer::calculateDirection(const sf::Vector2f& shooterPosition, const sf::Vector2f& targetPosition, float projectileSpeed)
+{
+	float verticalDisplacement = targetPosition.y - shooterPosition.y;
+	
+	float timeToHighestPoint = std::sqrt(2 * verticalDisplacement / (GRAVITY*projectileSpeed));
+
+	float timeOfFlight = 2.f * timeToHighestPoint;
+	//float timeOfFlight = 2.f * projectileSpeed * std::sin((2 * 3.14f) / 3)/GRAVITY;
+	//float timeOfFlight = 60;
+
+	// Calculate the required vertical velocity to counteract gravity and hit the target
+	float verticalVelocity = (targetPosition.y - shooterPosition.y) / timeOfFlight - 0.5f * GRAVITY * timeOfFlight;
+
+	// Calculate the horizontal velocity
+	float horizontalVelocity = (targetPosition.x - shooterPosition.x) / timeOfFlight;
+
+	// Create and return the initial velocity vector
+	sf::Vector2f initialVelocity(horizontalVelocity, verticalVelocity);
+	return initialVelocity;
 }
