@@ -22,6 +22,7 @@ public:
 	bool isDead() { return m_dead; }
 	virtual sf::FloatRect getRec() const { return m_shape->getGlobalBounds(); };
 
+	void setBlendMode() { m_shape->setFillColor(sf::Color(255, 255, 255, 128)); }
 protected:
 	std::unique_ptr<sf::Shape> m_shape;
 private:

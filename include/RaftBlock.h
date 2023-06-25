@@ -6,8 +6,8 @@
 class RaftBlock: public GameObject
 {
 public:
-	RaftBlock(const sf::Vector2f& position)
-		: GameObject({160,70}, position,'#'), m_durability(150)
+	RaftBlock(Vector2f size, const sf::Vector2f& position, char c)
+		: GameObject(size, position, c), m_durability(150)
 	{}
 	void draw(sf::RenderWindow* window, const sf::Vector2f& position = sf::Vector2f()) const override 
 	{ 
@@ -23,7 +23,21 @@ public:
 		rec.setPosition(getPosition().x - 80, getPosition().y - 10);
 		return rec; 
 	}
-
+	
 private:
 	int m_durability;
+};
+
+class DownRaft : public RaftBlock
+{
+public:
+	DownRaft(const Vector2f& position)
+		:RaftBlock(Vector2f{ 160, 70 }, position, '#') {}
+};
+
+class UpRaft : public RaftBlock
+{
+public:
+	UpRaft(const Vector2f& position)
+		:RaftBlock(Vector2f{ 160, 100 }, position, 'u') {}
 };

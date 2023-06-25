@@ -69,7 +69,6 @@ void Weapon::draw(RenderWindow* window, const sf::Vector2f& position) const
 
 		for (const auto& dot : dots)
 			window->draw(dot);
-		auto rec = RaftBlock(sf::Vector2f(BACKGROUND_SIZE.x - 163, 400));
 		//while (potentialPosition.y < BACKGROUND_SIZE.y && potentialPosition.x < BACKGROUND_SIZE.x)
 		//for (int i = 0; i < 1000; ++i)
 		//{

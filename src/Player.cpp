@@ -1,8 +1,10 @@
 #include "Player.h"
 
-Player::Player(int numOfRaftMen, const sf::Vector2f& position, Board* board)
-	: m_playing(false), m_crewSize(numOfRaftMen), m_position(position), m_board(board)
+Player::Player(int numOfRaftMen, const sf::Vector2f& position)
+	: m_playing(false), m_crewSize(numOfRaftMen), m_position(position),
+	m_lastButton(NON)
 {
+	initMenu();
 	auto raft = new RaftBlock(position);
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
@@ -41,6 +43,15 @@ void Player::initRaftMen()
 	}
 }
 
+void Player::initMenu()
+{
+	m_menu.emplace_back(make_unique<UpRaftButton>(Vector2f{ 70,80 }));
+	m_menu.emplace_back(make_unique<DownRaftButton>(Vector2f{ 70,170 }));
+	m_menu.emplace_back(make_unique<TennisButton>(Vector2f{ 70, 260 }));
+	m_menu.emplace_back(make_unique<GrenadeButton>(Vector2f{ 70, 350 }));
+}
+
+
 void Player::update()
 {
 	////cause raftMan uses shared_from_this
@@ -73,8 +84,10 @@ void Player::update()
 
 void Player::draw(sf::RenderWindow* window)
 {
-	//for (const auto& x : m_raft)
-	//	x->draw(window);
+	for (const auto& x : m_menu)
+		x->draw(window, Vector2f{ sf::Mouse::getPosition(*window).x * 1.f, sf::Mouse::getPosition(*window).y * 1.f });
+
+
 
 	//for (const auto& x : m_raftMen)
 	//	x->draw(window);
@@ -83,11 +96,10 @@ void Player::draw(sf::RenderWindow* window)
 
 }
 
-void Player::getWeapon(RaftMan& pawn, int i)
+void Player::getWeapon(RaftMan& pawn, enum Menu weapon)
 {
-	i++;
 	//needs to manage enabling
-	std::shared_ptr wp = (m_weapons[i % m_weapons.size()]);
+	std::shared_ptr wp = (m_weapons[weapon]);
 	//std::shared_ptr wp = m_weapons.at(0);
 	pawn.useWeapon(wp);
 }
@@ -245,4 +257,69 @@ sf::Vector2f Computer::calculateDirection(const sf::Vector2f& shooterPosition, c
 	// Create and return the initial velocity vector
 	sf::Vector2f initialVelocity(horizontalVelocity, verticalVelocity);
 	return initialVelocity;
+}
+
+Menu Player::buttonPressed(RenderWindow* window, const sf::Event& event)
+{
+	for (const auto& button : m_menu)
+		if (event.type == sf::Event::MouseButtonReleased &&
+			event.mouseButton.button == sf::Mouse::Button::Left &&
+			button.get()->globalBounds().contains(Vector2f{sf::Mouse::getPosition(*window).x * 1.f, sf::Mouse::getPosition(*window).y * 1.f}))
+			return m_lastButton = button->choose();
+
+	return m_lastButton;
+}
+
+bool Player::placeRaft(const enum Menu& button, RaftBlock& raftBlock, const Vector2i& cursorLocation)
+{
+	for (const auto& raft : m_raft)
+	{
+		Vector2f raftPos = raft.get()->getPosition();
+		float height = raft.get()->getGlobalBounds().height;
+		float width = raft.get()->getGlobalBounds().width;
+		
+		//needs to le'avhen if its up or down kedei ladaat im efshar lehaber et hahelek
+		if (button == UP_RAFT)
+		{
+			if (UpRaft(Vector2f{ raftPos.x, raftPos.y - height }).getGlobalBounds().contains(Vector2f(cursorLocation)))
+			{
+				raftBlock.setPosition(Vector2f{ raftPos.x, raftPos.y - height });
+				return true;
+			}
+		}
+		
+		else if (button == DOWN_RAFT)
+		{
+			if (DownRaft(Vector2f{ raftPos.x + width, raftPos.y }).getGlobalBounds().contains(Vector2f(cursorLocation)))
+			{
+				raftBlock.setPosition(Vector2f{ raftPos.x + width, raftPos.y });
+
+				return true;
+			}
+
+			else if (DownRaft(Vector2f{ raftPos.x - width, raftPos.y }).getGlobalBounds().contains(Vector2f(cursorLocation)))
+			{
+				raftBlock.setPosition(Vector2f{ raftPos.x - width, raftPos.y });
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void Player::addRaft(RaftMan& pawn, const enum Menu& button)
+{
+	for (const auto& raft : m_raft)
+		if (raft.get()->getPosition() == pawn.getRaftBlock().getPosition())
+			return;
+
+	if (button == UP_RAFT)
+		m_raft.push_back(std::make_unique<UpRaft>(pawn.getRaftBlock().getPosition()));
+
+	else if (button == DOWN_RAFT)
+		m_raft.push_back(std::make_unique<DownRaft>(pawn.getRaftBlock().getPosition()));
+
+	m_lastButton = NON;
 }

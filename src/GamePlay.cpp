@@ -8,6 +8,11 @@ GamePlay::GamePlay()
     m_backGround.setTexture(&Resources::instance().getTexture('b'));
     m_backGround.setSize(BACKGROUND_SIZE);
     m_backGround.setPosition({ 0,0 });
+
+    
+    m_text.setFont(Resources::instance().getFont());
+    m_text.setCharacterSize(50);
+    m_text.setPosition(WINDOW_SIZE.x / 2.f, 30);
 }
 
 void GamePlay::gameLoop(RenderWindow* window)
@@ -19,21 +24,26 @@ void GamePlay::gameLoop(RenderWindow* window)
 
     auto view = sf::View(sf::FloatRect(0, 0, WINDOW_SIZE.x, WINDOW_SIZE.y));
 
+    int timeAsSeconds = 30; 
     
     window->setFramerateLimit(38);
     //openShot(window, player);
+
+    sf::Clock turnTimer;
 
     while (window->isOpen())
     {
         window->clear();
         window->setView(view);
         window->draw(m_backGround);
+        drawTime(timeAsSeconds-turnTimer.getElapsedTime().asSeconds(), *window);
         //update
         board.update();
         board.handleCollisions();
         board.draw(window);
         //player->update();
         //player->draw(window);
+
 
         window->display();
 
@@ -60,6 +70,19 @@ void GamePlay::gameLoop(RenderWindow* window)
         /*if(view.getCenter().x + view.getSize().x/2.f < m_backGround.getSize().x &&
             view.getCenter().x + view.getSize().x / 2.f > 0)
             view.move(Vector2f({ 1, 0 }) * 0.15f);*/
+        if (turnTimer.getElapsedTime().asSeconds() >= timeAsSeconds)
+        {
+            playerTurn = !playerTurn;
+            turnTimer.restart();
+        }
+
+        if (playerTurn)
+        {
+            player->play(window, event);
+            //playerTurn = false;
+        }
+        else if (player->isPlaying())
+            player->play(window, event);
         board.play(window, event);
         //if (playerTurn)
         //{
@@ -103,10 +126,35 @@ void GamePlay::openShot(RenderWindow* window, std::shared_ptr<Player> player)
         view = window->getView();
         if (view.getCenter().x + view.getSize().x / 2.f < m_backGround.getSize().x &&
             view.getCenter().x + view.getSize().x / 2.f > 0)
-            view.move(Vector2f({ 1, 0 }) * 0.3f);
+            view.move(Vector2f({ 1, 0 }) * 10.f);
         else {
             sleep(sf::seconds(1));
             break;
         }
     }
+}
+
+void GamePlay::drawTime(unsigned int time, sf::RenderWindow& window)
+{
+    int min = (time / 60), sec = (time % 60);
+
+    m_text.setFillColor(sf::Color::White);
+    m_text.setOutlineThickness(4);
+    m_text.setOutlineColor(sf::Color::Black);
+
+    if (min < 10 && sec < 10)
+        m_text.setString("0" + std::to_string(min) + ":0" + (std::to_string(sec)));
+    else if (min < 10)
+        m_text.setString("0" + std::to_string(min) + ":" + (std::to_string(sec)));
+    else if (sec < 10)
+        m_text.setString(std::to_string(min) + ":0" + (std::to_string(sec)));
+    else
+        m_text.setString(std::to_string(min) + ":" + (std::to_string(sec)));
+
+    if (min == 0 && sec <= 10)
+        m_text.setFillColor(sf::Color::Red);
+
+    m_text.setOrigin(m_text.getLocalBounds().width / 2.f,
+        m_text.getLocalBounds().height / 2.f);
+    window.draw(m_text);
 }

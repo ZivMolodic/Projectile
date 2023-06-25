@@ -11,6 +11,7 @@
 #include "Board.h"
 //#include "Controller.h"
 //#include "Player.h"
+#include "Button.h"
 
 int main() 
 {

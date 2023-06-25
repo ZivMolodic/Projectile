@@ -6,6 +6,7 @@
 #include "RaftBlock.h"
 #include "RaftMan.h"
 #include "Weapon.h"
+#include "Button.h"
 
 using namespace std;
 class RaftMan;
@@ -17,13 +18,16 @@ public:
     virtual ~Player() = default;
     void update();
     void draw(sf::RenderWindow* window);
-    void getWeapon(RaftMan& pawn, int i);
+    void addRaft(RaftMan& pawn, const enum Menu& button);
+    bool placeRaft(const enum Menu& button, RaftBlock& raftBlock, const Vector2i& cursorLocation);
+    Menu buttonPressed(RenderWindow* window, const sf::Event& event);
+    void getWeapon(RaftMan& pawn, enum Menu weapon);
     std::shared_ptr<GameObject> getObjectile() { for (const auto& x : m_weapons) if (x->firing())return x->getObjectile(); }
     void done(RaftMan& pawn) { m_playing = false; }
     virtual void play(RenderWindow* window, const sf::Event& event);
     bool isPlaying() const { return m_playing; }
     bool shooting() { auto search = find_if(m_weapons.begin(), m_weapons.end(), [](std::shared_ptr<Weapon> w) { return w->firing(); }); return search != m_weapons.end(); }
-    sf::Vector2f getObjectilePosition() 
+    sf::Vector2f getObjectilePosition()
     {
         auto search = find_if(m_weapons.begin(), m_weapons.end(), [](std::shared_ptr<Weapon> w) { return w->firing(); });
         if (search != m_weapons.end())
@@ -45,18 +49,18 @@ protected:
     void setPlay() { m_playing = true; }
 private:
     void initRaftMen();
-
-    Board* m_board;
+    void initMenu();
     vector<std::shared_ptr<Weapon>> m_weapons;
     bool m_playing;
     int m_crewSize;
     sf::Vector2f m_position;
+    std::vector<std::unique_ptr<GameMenuButton>> m_menu;
+    enum Menu m_lastButton;
 };
-
-class Computer: public Player
+class Computer : public Player
 {
 public:
-    Computer(int numOfRaftMen, const sf::Vector2f& position, Board* board): Player(numOfRaftMen, position, board), m_turn(0), m_play(false){}
+    Computer(int numOfRaftMen, const sf::Vector2f& position, Board* board) : Player(numOfRaftMen, position, board), m_turn(0), m_play(false) {}
     void play(RenderWindow* window, const sf::Event& event) override;
 
 private:
