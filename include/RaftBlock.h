@@ -6,7 +6,7 @@
 class RaftBlock: public GameObject
 {
 public:
-	RaftBlock(Vector2f size, const sf::Vector2f& position, char c)
+	RaftBlock(const Vector2f& size, const sf::Vector2f& position, char c)
 		: GameObject(size, position, c), m_durability(150)
 	{}
 	void draw(sf::RenderWindow* window, const sf::Vector2f& position = sf::Vector2f()) const override 

@@ -34,7 +34,7 @@ public:
             return search->get()->getObjectilePosition();
 
     }
-    sf::Vector2f getPlayerPosition() const;
+    sf::Vector2f getUserPosition() const;
     //void handleCollision(const RectangleShape& rec)
     //{
     //    auto search = find_if(m_weapons.begin(), m_weapons.end(), [](std::shared_ptr<Weapon> w) { return w->firing(); });
@@ -48,6 +48,7 @@ protected:
     vector<std::unique_ptr<RaftMan>> m_raftMen;
     void setPlay() { m_playing = true; }
 private:
+    Board* m_board;
     void initRaftMen();
     void initMenu();
     vector<std::shared_ptr<Weapon>> m_weapons;
@@ -57,6 +58,8 @@ private:
     std::vector<std::unique_ptr<GameMenuButton>> m_menu;
     enum Menu m_lastButton;
 };
+
+
 class Computer : public Player
 {
 public:

@@ -8,10 +8,10 @@
 class Animation
 {
 public:
-    Animation(const AnimationData& data, Direction dir, sf::Sprite& sprite, char c);
+    Animation(const AnimationData& data, DirectionA dir, sf::Sprite& sprite, char c);
 
     // Set the direction; the sprite will take the relevant texture rect
-    void direction(Direction dir);
+    void direction(DirectionA dir);
 
     // Add more time to the elapsed time; if enough time passed, it
     // updates the sprite to show the next frame in the animation
@@ -24,7 +24,7 @@ private:
 
     const AnimationData& m_data;
     sf::Time m_elapsed = {};
-    Direction m_dir = Direction::Up;
+    DirectionA m_dir = DirectionA::Up;
     int m_index = 0;
     sf::Sprite& m_sprite;
 };

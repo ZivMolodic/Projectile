@@ -16,7 +16,7 @@ Board::Board(const sf::Vector2f& playerPosition, const sf::Vector2f& computerPos
 
 sf::Vector2f Board::getUserPosition() const
 { 
-    return m_user->getPlayerPosition(); 
+    return m_user->getUserPosition(); 
 }
 
 void Board::addObject(GameObject* object)
@@ -27,7 +27,7 @@ void Board::addObject(GameObject* object)
 }
 
 void Board::draw(RenderWindow* window) 
-{ 
+{
 	for (auto& object : m_objects)
         if(typeid(*object).name() != "RaftMan")
             object->draw(window);
@@ -35,6 +35,8 @@ void Board::draw(RenderWindow* window)
     for (auto& object : m_objects)
         if (typeid(*object).name() == "RaftMan")
             object->draw(window);
+
+    m_user->draw(window);
 }
 void Board::play(RenderWindow* window, const sf::Event& event) 
 { 

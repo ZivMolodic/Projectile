@@ -20,14 +20,14 @@ namespace
             return currentStart;
         };
 
-        missile.m_data[Direction::Right].emplace_back(currentStart, size);
-        missile.m_data[Direction::Right].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Up].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Up].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Right].emplace_back(currentStart, size);
+        missile.m_data[DirectionA::Right].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
 
         return missile;
     }
@@ -48,18 +48,18 @@ namespace
             return currentStart;
         };
 
-        guidedMissile.m_data[Direction::Right].emplace_back(currentStart, size);
-        guidedMissile.m_data[Direction::Right].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Right].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Right].emplace_back(currentStart, size);
+        guidedMissile.m_data[DirectionA::Right].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Right].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
 
         return guidedMissile;
     }

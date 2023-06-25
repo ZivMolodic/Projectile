@@ -11,18 +11,33 @@
 
 //this namespace handles all collisions creating double v-table
 namespace {
-    void manWithRaft(GameObject& man, GameObject& raft)
+    void manWithDownRaft(GameObject& man, GameObject& raft)
     {
         RaftMan& raftMan = dynamic_cast<RaftMan&>(man);
-        RaftBlock& raftBlock = dynamic_cast<RaftBlock&>(raft);
+        DownRaft& raftBlock = dynamic_cast<DownRaft&>(raft);
+
+        raftMan.handleCollision(raftBlock.getRectangle());
+    }
+    void manWithUpRaft(GameObject& man, GameObject& raft)
+    {
+        RaftMan& raftMan = dynamic_cast<RaftMan&>(man);
+        UpRaft& raftBlock = dynamic_cast<UpRaft&>(raft);
 
         raftMan.handleCollision(raftBlock.getRectangle());
     }
     
-    void objectileWithRaft(GameObject& obj, GameObject& raft)
+    void objectileWithDownRaft(GameObject& obj, GameObject& raft)
     {
         Objectile& objectile = dynamic_cast<Objectile&>(obj);
-        RaftBlock& raftBlock = dynamic_cast<RaftBlock&>(raft);
+        DownRaft& raftBlock = dynamic_cast<DownRaft&>(raft);
+
+        objectile.handleCollision(raftBlock.getRectangle());
+    }
+
+    void objectileWithUpRaft(GameObject& obj, GameObject& raft)
+    {
+        Objectile& objectile = dynamic_cast<Objectile&>(obj);
+        UpRaft& raftBlock = dynamic_cast<UpRaft&>(raft);
 
         objectile.handleCollision(raftBlock.getRectangle());
     }
@@ -43,8 +58,10 @@ namespace {
     std::unique_ptr<CollisionMap> CreateMap() {
         std::unique_ptr<CollisionMap> cm = std::make_unique<CollisionMap>();
 
-        (*cm)[std::string(typeid(RaftMan).name()) + std::string(typeid(RaftBlock).name())] = manWithRaft;
-        (*cm)[std::string(typeid(Objectile).name()) + std::string(typeid(RaftBlock).name())] = objectileWithRaft;
+        (*cm)[std::string(typeid(RaftMan).name()) + std::string(typeid(DownRaft).name())] = manWithDownRaft;
+        (*cm)[std::string(typeid(RaftMan).name()) + std::string(typeid(UpRaft).name())] = manWithUpRaft;
+        (*cm)[std::string(typeid(Objectile).name()) + std::string(typeid(DownRaft).name())] = objectileWithDownRaft;
+        (*cm)[std::string(typeid(Objectile).name()) + std::string(typeid(UpRaft).name())] = objectileWithUpRaft;
         (*cm)[std::string(typeid(RaftMan).name()) + std::string(typeid(Explosion).name())] = manWithExplosion;
         //(*cm)[std::string(typeid(Pacman).name()) + std::string(typeid(Door).name())] = pacmanWithDoor;
         //(*cm)[std::string(typeid(Pacman).name()) + std::string(typeid(Key).name())] = pacmanWithKey;

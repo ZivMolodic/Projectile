@@ -2,37 +2,37 @@
 
 #include <stdexcept>
 
-Direction opposite(Direction dir)
+DirectionA opposite(DirectionA dir)
 {
     switch (dir)
     {
-        case Direction::Up:
-            return Direction::Down;
-        case Direction::Down:
-            return Direction::Up;
-        case Direction::Right:
-            return Direction::Left;
-        case Direction::Left:
-            return Direction::Right;
-        case Direction::Stay:
-            return Direction::Stay;
+        case DirectionA::Up:
+            return DirectionA::Down;
+        case DirectionA::Down:
+            return DirectionA::Up;
+        case DirectionA::Right:
+            return DirectionA::Left;
+        case DirectionA::Left:
+            return DirectionA::Right;
+        case DirectionA::Stay:
+            return DirectionA::Stay;
     }
-    throw std::runtime_error("Unknown direction");
+    throw std::runtime_error("Unknown DirectionA");
 }
 
-sf::Vector2f toVector(Direction dir)
+sf::Vector2f toVector(DirectionA dir)
 {
     switch (dir)
     {
-        case Direction::Up:
+        case DirectionA::Up:
             return { 0, -1 };
-        case Direction::Down:
+        case DirectionA::Down:
             return { 0, 1 };
-        case Direction::Right:
+        case DirectionA::Right:
             return { 1, 0 };
-        case Direction::Left:
+        case DirectionA::Left:
             return { -1, 0 };
-        case Direction::Stay:
+        case DirectionA::Stay:
             return { 0, 0 };
     }
     throw std::runtime_error("Unknown direction");

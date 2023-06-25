@@ -17,7 +17,7 @@ GamePlay::GamePlay()
 
 void GamePlay::gameLoop(RenderWindow* window)
 {
-    auto board = Board(Vector2f{ 20, 400 }, Vector2f{ 450,400 }, 1);
+    auto board = Board(Vector2f{ 20, 400 }, Vector2f{ 1150,400 }, 1);
     //auto player = std::make_shared<Player>(1, Vector2f{ 180, 400 });
 
     bool playerTurn = true;
@@ -26,7 +26,7 @@ void GamePlay::gameLoop(RenderWindow* window)
 
     int timeAsSeconds = 30; 
     
-    window->setFramerateLimit(38);
+    window->setFramerateLimit(50);
     //openShot(window, player);
 
     sf::Clock turnTimer;
@@ -76,13 +76,7 @@ void GamePlay::gameLoop(RenderWindow* window)
             turnTimer.restart();
         }
 
-        if (playerTurn)
-        {
-            player->play(window, event);
-            //playerTurn = false;
-        }
-        else if (player->isPlaying())
-            player->play(window, event);
+
         board.play(window, event);
         //if (playerTurn)
         //{

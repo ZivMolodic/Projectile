@@ -1,25 +1,25 @@
 #include "Player.h"
 
-Player::Player(int numOfRaftMen, const sf::Vector2f& position)
+Player::Player(int numOfRaftMen, const sf::Vector2f& position, Board* board)
 	: m_playing(false), m_crewSize(numOfRaftMen), m_position(position),
-	m_lastButton(NON)
+	m_lastButton(NON), m_board(board)
 {
 	initMenu();
-	auto raft = new RaftBlock(position);
+	auto raft = new DownRaft(position);
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
 
-	raft = new RaftBlock({ position.x + 160, position.y});
+	raft = new DownRaft({ position.x + 160, position.y});
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
 
-	raft = new RaftBlock({ position.x + 160*3, position.y });
+	raft = new DownRaft({ position.x + 160*3, position.y });
 	m_raft.emplace_back(raft);
 	m_board->addObject(raft);
 
-	raft = new RaftBlock({ position.x + 160, position.y - 100 });
-	m_raft.emplace_back(raft);
-	m_board->addObject(raft);
+	auto uraft = new UpRaft({ position.x + 160, position.y - 100 });
+	m_raft.emplace_back(uraft);
+	m_board->addObject(uraft);
 	
 	initRaftMen();
 	//for(int i=0; i < 3; ++i)
@@ -54,15 +54,6 @@ void Player::initMenu()
 
 void Player::update()
 {
-	////cause raftMan uses shared_from_this
-	//static bool raftMenInit = false;
-	//if (!raftMenInit)
-	//{
-	//	initRaftMen();
-	//	raftMenInit = true;
-	//}
-
-
 	for (auto& pawn : m_raftMen)
 	{
 		pawn->update();
@@ -111,34 +102,37 @@ void Player::play(RenderWindow* window, const sf::Event& event)
 	m_raftMen[0]->play(window, event);
 }
 
-sf::Vector2f Player::getPlayerPosition() const
+sf::Vector2f Player::getUserPosition() const
 {
 	return m_raftMen[rand() % m_raftMen.size()]->getPosition();
 }
 
 void Computer::play(RenderWindow* window, const sf::Event& event)
 {
-	if (!isPlaying())
+	if(!m_play)
 	{
-		//illustrates computer thinking
-		//sf::Clock timer;
-		//timer.restart();
-		//while (timer.getElapsedTime().asSeconds() < 2.f);
+		if (!isPlaying())
+		{
+			//illustrates computer thinking
+			//sf::Clock timer;
+			//timer.restart();
+			//while (timer.getElapsedTime().asSeconds() < 2.f);
 
-		setPlay();
-		m_userPosition = getBoard()->getUserPosition();
-		m_turn = (m_turn + 1) % m_raftMen.size();
-		//m_destination = m_raft[rand() % m_raft.size()]->getPosition();
-		m_destination = m_raft[2]->getPosition();
-	}
-	if (m_play)
-		m_play = true;
-	if (std::abs(m_raftMen[m_turn]->getPosition().y + 40 - m_destination.y) > 2||
-		std::abs(m_raftMen[m_turn]->getPosition().x - m_destination.x) > 2)
-		walk(m_destination, window, event);
-	else
-		aim(m_userPosition, window, event);
+			setPlay();
+			m_userPosition = getBoard()->getUserPosition();
+			m_turn = (m_turn + 1) % m_raftMen.size();
+			//m_destination = m_raft[rand() % m_raft.size()]->getPosition();
+			m_destination = m_raft[0]->getPosition();
+		}
+		if (m_play)
+			m_play = true;
+		if (std::abs(m_raftMen[m_turn]->getPosition().y + 40 - m_destination.y) > 2 ||
+			std::abs(m_raftMen[m_turn]->getPosition().x - m_destination.x) > 2)
+			walk(m_destination, window, event);
+		else
+			aim(m_userPosition, window, event);
 		//m_raftMen[m_turn]->play(window, event);
+	}
 }
 
 void Computer::walk(const sf::Vector2f& destination, RenderWindow* window, const sf::Event& event)
@@ -178,9 +172,6 @@ void Computer::walk(const sf::Vector2f& destination, RenderWindow* window, const
 		else
 			m_destination = sf::Vector2f(m_raftMen[m_turn]->getPosition().x, m_raftMen[m_turn]->getPosition().y + 40);
 	}
-
-	//else if (m_raftMen[turn]->getPosition().y > destination.y + m_raftMen[turn]->getRec().height)
-	//	m_raftMen[turn]->play(window, event, Direction::Up);
 }
 
 bool Computer::onEdge(float position) const
@@ -228,14 +219,14 @@ float Computer::calculateVelocity(const sf::Vector2f& target, const sf::Vector2f
 	
 	//auto res = (target.x - position.x) / (time*2.3f);
 	//return res;
-	return (target.x - position.x) / (time * 1.9f);
+	return (target.x - position.x) / (time * 1.3f);
 }
 void Computer::aim(const sf::Vector2f& target, RenderWindow* window, const sf::Event& event)
 {
 	//m_raftMen[m_turn]->shoot(calculateDirection(m_raftMen[m_turn]->getPosition(), target, 13.f));
 	//m_raftMen[m_turn]->shoot({-11,-11});
-	m_raftMen[m_turn]->shoot(sf::Vector2f(1 * calculateVelocity(target, m_raftMen[m_turn]->getPosition()), -20));
-
+	m_raftMen[m_turn]->shoot(sf::Vector2f(1 * calculateVelocity(target, m_raftMen[m_turn]->getPosition()), -20), Menu::TENNIS);
+	m_play = true;
 }
 
 sf::Vector2f Computer::calculateDirection(const sf::Vector2f& shooterPosition, const sf::Vector2f& targetPosition, float projectileSpeed)
@@ -312,14 +303,22 @@ bool Player::placeRaft(const enum Menu& button, RaftBlock& raftBlock, const Vect
 void Player::addRaft(RaftMan& pawn, const enum Menu& button)
 {
 	for (const auto& raft : m_raft)
-		if (raft.get()->getPosition() == pawn.getRaftBlock().getPosition())
+		if (raft.get()->getPosition() == pawn.getRaftBlock()->getPosition())
 			return;
 
 	if (button == UP_RAFT)
-		m_raft.push_back(std::make_unique<UpRaft>(pawn.getRaftBlock().getPosition()));
+	{
+		auto raft = new UpRaft(pawn.getRaftBlock()->getPosition());
+		m_raft.emplace_back(raft);
+		m_board->addObject(raft);
+	}
 
 	else if (button == DOWN_RAFT)
-		m_raft.push_back(std::make_unique<DownRaft>(pawn.getRaftBlock().getPosition()));
+	{
+		auto raft = new DownRaft(pawn.getRaftBlock()->getPosition());
+		m_raft.emplace_back(raft);
+		m_board->addObject(raft);
+	}
 
 	m_lastButton = NON;
 }
