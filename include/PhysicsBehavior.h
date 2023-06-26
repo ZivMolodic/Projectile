@@ -11,6 +11,7 @@ class PhysicsBehavior
 public:
     PhysicsBehavior(float bounce, float weight) : m_weight(weight), m_velocity{ 0,0 } , m_jumping(false),
         m_rotate(false), m_bounce(bounce), m_walking(false) { if (weight < 0)m_weight = 1; m_timer.restart(); }
+    virtual ~PhysicsBehavior() = default;
     Vector2f getVelocity() const { return m_velocity; }
     void setWalking(bool walks = true) { m_walking = walks; }
     float getWeight() const { return m_weight; }
@@ -21,7 +22,7 @@ public:
     void setBodyToRotate(bool rotate = true) { m_rotate = rotate; }
     void setBounce(float bounce) { (bounce >= 0) ? m_bounce = bounce : m_bounce = 0; }
     float getBounce() { return m_bounce; }
-    void update(std::shared_ptr<Shape>& body);
+    void update(Shape* body);
     virtual sf::Vector2f manageCollision(const sf::Vector2f& position, const RectangleShape& rec = RectangleShape()) = 0;
     
 protected:

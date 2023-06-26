@@ -18,3 +18,12 @@ const sf::Vector2f RAFT_SIZE = { 40, 10 };
 
 enum Menu {TENNIS, GRENADE, MISSILE, GUIDED_MISSILE, UP_RAFT, DOWN_RAFT, NON};
 
+enum class Direction {
+    Up,
+    Down,
+    Left,
+    Right, 
+    NA
+};
+
+

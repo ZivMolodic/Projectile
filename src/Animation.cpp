@@ -4,16 +4,16 @@
 
 const auto AnimationTime = sf::seconds(0.3f);
 
-Animation::Animation(const AnimationData& data, Direction dir, sf::Sprite& sprite, char c)
+Animation::Animation(const AnimationData& data, DirectionA dir, sf::Sprite& sprite, char c)
     : m_data(data), m_dir(dir), m_sprite(sprite)
 {
     m_sprite.setTexture(Resources::instance().getTexture(c));
     update();
 }
 
-void Animation::direction(Direction dir)
+void Animation::direction(DirectionA dir)
 {
-    if (m_dir == dir || dir == Direction::Stay)
+    if (m_dir == dir || dir == DirectionA::Stay)
     {
         return;
     }

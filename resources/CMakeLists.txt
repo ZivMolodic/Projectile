@@ -3,8 +3,6 @@ file (GLOB MY_HEADER_FILES CONFIGURE_DEPENDS LIST_DIRECTORIES false RELATIVE ${C
 target_sources (${CMAKE_PROJECT_NAME} PRIVATE ${MY_HEADER_FILES})
 
 configure_file ("key.png" ${CMAKE_BINARY_DIR} COPYONLY)
-#configure_file ("present.png" ${CMAKE_BINARY_DIR} COPYONLY)
-#configure_file ("help.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("superpacman_present.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("clock_present.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("ice_present.png" ${CMAKE_BINARY_DIR} COPYONLY)
@@ -25,6 +23,8 @@ configure_file ("grenade_button.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("tennis_button.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("up_raft_button.png" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("down_raft_button.png" ${CMAKE_BINARY_DIR} COPYONLY)
+configure_file ("raft2.png" ${CMAKE_BINARY_DIR} COPYONLY)
+configure_file ("explosion.png" ${CMAKE_BINARY_DIR} COPYONLY)
 
 configure_file ("timer.wav" ${CMAKE_BINARY_DIR} COPYONLY)
 configure_file ("finish_level.wav" ${CMAKE_BINARY_DIR} COPYONLY)

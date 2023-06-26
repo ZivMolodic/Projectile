@@ -10,6 +10,6 @@
 struct AnimationData
 {
     using ListType = std::vector<sf::IntRect>;
-    using DataType = std::unordered_map<Direction, ListType>;
+    using DataType = std::unordered_map<DirectionA, ListType>;
     DataType m_data;
 };

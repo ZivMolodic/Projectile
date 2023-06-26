@@ -17,7 +17,8 @@ GamePlay::GamePlay()
 
 void GamePlay::gameLoop(RenderWindow* window)
 {
-    auto player = std::make_shared<Player>(1, Vector2f{ 180, 400 });
+    auto board = Board(Vector2f{ 20, 400 }, Vector2f{ 1150,400 }, 1);
+    //auto player = std::make_shared<Player>(1, Vector2f{ 180, 400 });
 
     bool playerTurn = true;
 
@@ -25,8 +26,8 @@ void GamePlay::gameLoop(RenderWindow* window)
 
     int timeAsSeconds = 30; 
     
-    window->setFramerateLimit(30);
-    openShot(window, player);
+    window->setFramerateLimit(50);
+    //openShot(window, player);
 
     sf::Clock turnTimer;
 
@@ -37,8 +38,11 @@ void GamePlay::gameLoop(RenderWindow* window)
         window->draw(m_backGround);
         drawTime(timeAsSeconds-turnTimer.getElapsedTime().asSeconds(), *window);
         //update
-        player->update();
-        player->draw(window);
+        board.update();
+        board.handleCollisions();
+        board.draw(window);
+        //player->update();
+        //player->draw(window);
 
 
         window->display();
@@ -72,23 +76,25 @@ void GamePlay::gameLoop(RenderWindow* window)
             turnTimer.restart();
         }
 
-        if (playerTurn)
-        {
-            player->play(window, event);
-            //playerTurn = false;
-        }
-        else if (player->isPlaying())
-            player->play(window, event);
+
+        board.play(window, event);
+        //if (playerTurn)
+        //{
+        //    player->play(window, event);
+        //    //playerTurn = false;
+        //}
+        //else if (player->isPlaying())
+        //    player->play(window, event);
         
 
-        if (player->shooting())
-        {
-            sf::Vector2f objPosition = player->getObjectilePosition();
-            if (objPosition.x - view.getSize().x/2.f > 0 && objPosition.x + view.getSize().x/2.f <= m_backGround.getSize().x)
-                view.setCenter({ objPosition.x, view.getCenter().y });
-        }
-        else
-            view.setCenter({ view.getSize().x / 2.f , view.getCenter().y });
+        //if (board->shooting())
+        //{
+        //    sf::Vector2f objPosition = board->getObjectilePosition();
+        //    if (objPosition.x - view.getSize().x/2.f > 0 && objPosition.x + view.getSize().x/2.f <= m_backGround.getSize().x)
+        //        view.setCenter({ objPosition.x, view.getCenter().y });
+        //}
+        //else
+        //    view.setCenter({ view.getSize().x / 2.f , view.getCenter().y });
 
     }
 }

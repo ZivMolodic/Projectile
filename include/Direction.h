@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-enum class Direction
+enum class DirectionA
 {
     Up,
     Down,
@@ -12,5 +12,5 @@ enum class Direction
     Max,
 };
 
-Direction opposite(Direction dir);
-sf::Vector2f toVector(Direction dir);
+DirectionA opposite(DirectionA dir);
+sf::Vector2f toVector(DirectionA dir);

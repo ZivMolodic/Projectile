@@ -20,14 +20,14 @@ namespace
             return currentStart;
         };
 
-        missile.m_data[Direction::Right].emplace_back(currentStart, size);
-        missile.m_data[Direction::Right].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Up].emplace_back(nextStart(), size);
-        missile.m_data[Direction::Up].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Right].emplace_back(currentStart, size);
+        missile.m_data[DirectionA::Right].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
+        missile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
 
         return missile;
     }
@@ -48,18 +48,18 @@ namespace
             return currentStart;
         };
 
-        guidedMissile.m_data[Direction::Right].emplace_back(currentStart, size);
-        guidedMissile.m_data[Direction::Right].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Right].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Down].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Left].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
-        guidedMissile.m_data[Direction::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Right].emplace_back(currentStart, size);
+        guidedMissile.m_data[DirectionA::Right].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Right].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Down].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Left].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
+        guidedMissile.m_data[DirectionA::Up].emplace_back(nextStart(), size);
 
         return guidedMissile;
     }
@@ -88,9 +88,9 @@ void Resources::loadGraphics()
 			"guided_missile_button.png","grenade_button.png"
 		,"missile_button.png", "menuBlock.png","boy.png" ,
 		"main_background.png" ,"gameplay_background.png" ,
-		"grenade.png", "grenade_launcher.png", "raft.png", "up_raft.png"};
+		"grenade.png", "grenade_launcher.png", "raft.png", "up_raft.png", "explosion.png"};
 
-	std::vector <char> pngChars = {'S','s', 'd', 'T', 'U','M', 'G', 't', 'B', 'r', 'm', 'b','*', 'g','#', 'u'};
+	std::vector <char> pngChars = {'S','s', 'd', 'T', 'U','M', 'G', 't', 'B', 'r', 'm', 'b','*', 'g','#', 'u', 'x'};
 	sf::RenderWindow window;
 	for (int i = 0; i < pngNames.size(); i++)
 	{
